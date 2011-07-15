@@ -15,7 +15,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.orange</groupId>
-	<artifactId>PlaceAPIServer</artifactId>
+	<artifactId>GroupBuy_Data_Fetcher</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<!-- Shared version number properties -->
