@@ -13,6 +13,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
 import com.orange.common.utils.StringUtil;
+import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
@@ -26,6 +27,11 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		List<?> productList = getFieldBlock(root, "url");
 		if (productList == null)
 			return false;
+		
+		CommonAddressParser addressParser = CommonAddressParser.findParserById(siteId);
+		if (addressParser == null){
+			log.severe("cannot find address parser for site = "+siteId);
+		}
 		
 		Iterator<?> it = productList.iterator();
 		while (it.hasNext()){
@@ -68,9 +74,19 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setDescription(description);
 				product.setDetail(detail);
 				
-				ProductManager.createProduct(mongoClient, product);		
-				log.info("create product, product id="+product.getId());
-				incSuccessCounter();
+				// read address and set address
+				List<String> addressList = addressParser.parseAddress(loc);
+				if (addressList != null && addressList.size() > 0){
+					product.setAddress(addressList);
+				}
+				
+				if (ProductManager.createProduct(mongoClient, product)){		
+					log.info("create product, product id="+product.getId());
+					incSuccessCounter();
+				}
+				else{
+					incFailCounter();
+				}
 			}
 			else{
 				incFailCounter();
