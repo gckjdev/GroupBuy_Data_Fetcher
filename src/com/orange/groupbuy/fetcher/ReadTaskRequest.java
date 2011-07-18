@@ -42,7 +42,11 @@ public class ReadTaskRequest extends BasicProcessorRequest {
 		
 		// parse data
 		int parseType = ((Double)task.get(DBConstants.F_TASK_PARSER_TYPE)).intValue();
+		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);
+		
 		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(parseType);
+		parser.setMongoClient(mongoClient);
+		parser.setSiteId(siteId);
 		result = parser.parse(localFilePath);
 		if (!result){
 			mainProcessor.warning(this, "Fail to parse file "+localFilePath);
