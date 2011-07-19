@@ -18,7 +18,10 @@ public abstract class CommonGroupBuyParser {
 
 	public static final Logger log = Logger.getLogger(CommonGroupBuyParser.class
 			.getName());
+	
 	final static int PARSER_HAO123 = 1;
+	final static int PARSER_MEITUAN = 2;
+	
 	
 	MongoDBClient mongoClient;
 	String siteId;
@@ -57,6 +60,7 @@ public abstract class CommonGroupBuyParser {
 		return (Element)it.next();
 	}
 	
+	
 	public List<?> getFieldBlock(Element e, String... fieldNames){
 		
 		if (fieldNames == null || fieldNames.length == 0)
@@ -87,6 +91,8 @@ public abstract class CommonGroupBuyParser {
 		switch (parserType){
 			case PARSER_HAO123:
 				return new Hao123Parser();
+			case PARSER_MEITUAN:
+				return new MeituanParser();
 		}
 		
 		return null;

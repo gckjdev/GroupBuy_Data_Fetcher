@@ -13,7 +13,7 @@ import com.orange.groupbuy.parser.CommonGroupBuyParser;
 
 public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 
-	public static String DEFAULT_FILE_PATH = "/temp/groupbuy_raw_file/";	
+	public static String DEFAULT_FILE_PATH = "c:/temp/groupbuy_raw_file/";	
 	DBObject task;
 	
 	@Override
