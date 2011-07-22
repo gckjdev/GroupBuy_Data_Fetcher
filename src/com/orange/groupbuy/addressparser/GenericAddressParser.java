@@ -12,6 +12,8 @@ import org.htmlparser.tags.ScriptTag;
 import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 
+import com.sun.xml.internal.bind.v2.runtime.property.StructureLoaderBuilder;
+
 public class GenericAddressParser extends CommonAddressParser {
 	private List<String> addList = new LinkedList<String>();
 	@Override
@@ -191,14 +193,22 @@ public class GenericAddressParser extends CommonAddressParser {
 		if (len <= 0)
 			return false;
 		
-		int index_phone = str.indexOf("电话");
 		int index_add = str.indexOf("地址");
+		int index_yuyue = str.indexOf("预约");
+		int index_phone = str.indexOf("电话");
+		
 		int start = 0;
 		int end = str.length();
 		if(index_add != -1){
 			start = index_add + 3;
+			if(start > str.length()){
+				start = str.length();
+			}
 		}
-		if(index_phone != -1){
+
+		if(index_yuyue != -1){
+			end = index_yuyue;
+		} else if(index_phone != -1){
 			end = index_phone;
 		}
 		
@@ -208,7 +218,8 @@ public class GenericAddressParser extends CommonAddressParser {
 		if (end <= 0){
 			end = start;
 		}
-		else if (start > end){
+		
+		if (start > end){
 			end = len - 1;
 		}
 
@@ -223,16 +234,15 @@ public class GenericAddressParser extends CommonAddressParser {
 		// TODO remove
 		System.out.println("<debug> parse str result="+address);
 
-		if(address.length() > 5 && address.length() < 50){
-//			System.out.println(address.length());
-//			System.out.println(address);
-			if (!isLegal(address)){
-				// TODO remove
-				System.out.println("<debug> parse str, it's not legal address, skip");
-				return false;
-			}
+		if (!isLegal(address)){
+			// TODO remove
+			System.out.println("<debug> parse str, it's not legal address, skip");
+			return false;
+		}
 			
-			if(!addList.contains(address)){
+		address = str.substring(start, end).trim();
+		if(address.length() > 5 && address.length() < 50){
+			if(addList.indexOf(address) == -1){
 				addList.add(address);
 			}
 			
