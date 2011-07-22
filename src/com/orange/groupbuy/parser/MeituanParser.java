@@ -53,12 +53,14 @@ public class MeituanParser extends CommonGroupBuyParser {
 			Iterator<?> shop_it = shopsList.iterator();
 			while (shop_it.hasNext()) {
 				Element addressElement = (Element) shop_it.next();
-				if (productElement == null)
+				if (addressElement == null)
 					continue;
 				String phone = getFieldValue(addressElement, "shop_tel");
 				String address   = getFieldValue(addressElement, "shop_addr");
-				phoneList.add(phone);
-				addressList.add(address);
+				if (phone == null || phone.length() > 0)
+					phoneList.add(phone);
+				if (address == null || address.length() > 0)
+					addressList.add(address);
 			}
 
 			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
