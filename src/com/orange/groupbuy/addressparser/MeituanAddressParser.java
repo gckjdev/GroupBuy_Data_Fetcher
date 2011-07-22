@@ -19,8 +19,12 @@ public class MeituanAddressParser extends CommonAddressParser {
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-			Parser parser = new Parser((HttpURLConnection)(new URL(url)).openConnection());
-			find_Meituan_add(parser);
+			HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();
+			if (connection != null){
+				Parser parser = new Parser((HttpURLConnection)(new URL(url)).openConnection());
+				find_Meituan_add(parser);
+				connection.disconnect();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 

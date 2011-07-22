@@ -41,7 +41,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			
 			String website = getFieldValue(data, "website");
 			String siteurl = getFieldValue(data, "siteurl");
-			String city = getFieldValue(data, "city");
+			String city = covertCity(getFieldValue(data, "city"));
 			String title = getFieldValue(data, "title");
 			String image = getFieldValue(data, "image");
 			String startTimeString = getFieldValue(data, "startTime");
@@ -67,6 +67,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setDescription(description);
 				product.setDetail(detail);
 				product.setRange(range);
+				product.setCategory(category);
 				ProductManager.save(mongoClient, product);
 			}					
 			
@@ -76,10 +77,25 @@ public class Hao123Parser extends CommonGroupBuyParser {
 	}
 
 	@Override
-	public int convertCategory(String category) {		
+	public int convertCategory(String category) {	
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_XING800)){
+			return DBConstants.C_CATEGORY_SHOPPING;
+		}
+		
 		return StringUtil.intFromString(category);
 	}
 
+	private String covertCity(String city){
+		if (city == null)
+			return null;
+		
+		if (city.equalsIgnoreCase("商品")){
+			return "全国";
+		}
+		
+		return city;
+	}
 	
 
 }

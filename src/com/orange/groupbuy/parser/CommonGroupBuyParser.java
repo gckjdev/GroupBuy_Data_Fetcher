@@ -32,6 +32,7 @@ public abstract class CommonGroupBuyParser {
 	
 	final static int PARSER_HAO123 = 1;
 	final static int PARSER_MEITUAN = 2;
+	final static int PARSER_LASHOU = 3;
 	
 	
 	MongoDBClient mongoClient;
@@ -129,6 +130,8 @@ public abstract class CommonGroupBuyParser {
 				return new Hao123Parser();
 			case PARSER_MEITUAN:
 				return new MeituanParser();
+			case PARSER_LASHOU:
+				return new LashouParser();
 		}
 		
 		return null;
@@ -241,8 +244,11 @@ public abstract class CommonGroupBuyParser {
 				return null;
 			}
 		}
-		else{
-			log.info("fail to set product mandantory fields, product = "+product.toString());
+		else{			
+			log.info("fail to set product mandantory fields, loc="+loc+",city="+city+
+					",image="+image+",title="+title+",startDate="+startDate+",endDate="+endDate+
+					",price="+price+",value="+value+",bought="+bought+
+					",siteId="+siteId+",siteName="+siteName+",siteURL="+siteURL);
 			incCounter(COUNTER_TYPE.FAIL);
 			return null;
 		}		

@@ -18,10 +18,21 @@ public class GenericAddressParser extends CommonAddressParser {
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-			Parser parser = new Parser((HttpURLConnection)(new URL(url)).openConnection());
-			find_common_add(parser, url);
+			HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();
+			if (connection != null){
+				long fetchTime = System.currentTimeMillis();
+				Parser parser = new Parser(connection);
+				long parseStartTime = System.currentTimeMillis();
+				find_common_add(parser, url);
+				long parseEndTime = System.currentTimeMillis();
+				connection.disconnect();
+				
+				System.out.println("<debug> parsing address, network "+(parseStartTime - fetchTime)+
+						" millseconds, parse "+(parseEndTime-parseStartTime)+" millseconds");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		} 
 		return addList;
 	}
@@ -41,9 +52,10 @@ public class GenericAddressParser extends CommonAddressParser {
 			int index2 = s2.indexOf("\\s");
 			if(index2 != -1){
 				String s3 = s2.substring(0, index2);
-				if(isLeagle(s3)){
-					addtoList(s3);
-					cnt++;
+				if(isLegal(s3)){
+					boolean result = addtoList(s3);
+					if (result)
+						cnt++;
 				}
 				int len = s3.length();
 				int index3 = str.indexOf(s3);
@@ -59,10 +71,13 @@ public class GenericAddressParser extends CommonAddressParser {
 	 * 
 	 */
 	private void searchRoad(String str){
-		String[] ss = new String[10000];
+		String[] ss = null;
 //		System.out.println("enter searchRoad");
 		//split the blank
 		ss = str.split("\\s");
+		if (ss == null)
+			return;
+		
 		int len = ss.length;
 		if(len > 10){
 			int[] scores = new int[len];
@@ -89,6 +104,8 @@ public class GenericAddressParser extends CommonAddressParser {
 					if(ss[i].indexOf("铺") != -1)
 						scores[i]++;
 					if(ss[i].indexOf("店") != -1)
+						scores[i]++;
+					if(ss[i].indexOf("广场") != -1)
 						scores[i]++;
 				}
 			}
@@ -118,13 +135,34 @@ public class GenericAddressParser extends CommonAddressParser {
 	}
 	/**
 	 * 
-	 */
-	private boolean isLeagle(String str){
-		boolean flag = false;
-		if(str.contains("区") || str.contains("路")){
-			flag = true;
-		}
-		return flag;
+	 */	
+	
+	private boolean isLegal(String str){
+		int score = 0;
+		if(str.contains("市"))
+			score ++;		
+		if(str.contains("区"))
+			score ++;		
+		if (str.contains("路"))
+			score ++;
+		if (str.contains("街"))
+			score ++;
+		if (str.contains("店"))
+			score ++;
+		if (str.contains("道"))
+			score ++;
+		if (str.contains("铺"))
+			score ++;
+		if (str.contains("号"))
+			score ++;
+		if (str.contains("层"))
+			score ++;
+		if (str.contains("楼"))
+			score ++;
+		if (str.contains("广场"))
+			score ++;
+		
+		return (score >= 2);
 	}
 	/**
 	 * 递归删除script节点
@@ -147,8 +185,12 @@ public class GenericAddressParser extends CommonAddressParser {
 	/**
 	 * 
 	 */
-	private void addtoList(String str){
+	private boolean addtoList(String str){	// return true if a valid address is found
 		str = str.trim();
+		int len = str.length();
+		if (len <= 0)
+			return false;
+		
 		int index_phone = str.indexOf("电话");
 		int index_add = str.indexOf("地址");
 		int start = 0;
@@ -159,13 +201,46 @@ public class GenericAddressParser extends CommonAddressParser {
 		if(index_phone != -1){
 			end = index_phone;
 		}
+		
+		if (start >= len){
+			start = len - 1;
+		}
+		if (end <= 0){
+			end = start;
+		}
+		else if (start > end){
+			end = len - 1;
+		}
+
+		// TODO remove
+		System.out.println("<debug> parse str="+str+", start="+start+",end="+end);
+		
 		String address = str.substring(start, end);
+		String[] finalList = address.split("\\s");
+		if (finalList != null && finalList.length > 0)
+			address = finalList[0];
+		
+		// TODO remove
+		System.out.println("<debug> parse str result="+address);
+
 		if(address.length() > 5 && address.length() < 50){
 //			System.out.println(address.length());
 //			System.out.println(address);
+			if (!isLegal(address)){
+				// TODO remove
+				System.out.println("<debug> parse str, it's not legal address, skip");
+				return false;
+			}
+			
 			if(!addList.contains(address)){
 				addList.add(address);
 			}
+			
+			return true;
+		}
+		else{
+			System.out.println("<debug> parse str, address length "+address.length()+"too short or too long, skip");
+			return false;			
 		}
 	}
 	/**
@@ -173,6 +248,7 @@ public class GenericAddressParser extends CommonAddressParser {
 	 */
 	private void find_common_add(Parser parser, String url){
 		try {
+			parser.setEncoding("UTF-8");
 			NodeList nodes = parser.parse(null);
 			deletJSnode(nodes);
 //			System.out.println("nodes.size() = " + nodes.size());

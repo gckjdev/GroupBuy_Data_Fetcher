@@ -81,7 +81,7 @@ public class MeituanParser extends CommonGroupBuyParser {
 			return DBConstants.C_CATEGORY_FACE;			
 		}
 		else if (category.equalsIgnoreCase("生活服务")){
-			return DBConstants.C_CATEGORY_SHOPPING;			
+			return DBConstants.C_CATEGORY_LIFE;			
 		}
 		else if (category.equalsIgnoreCase("实物")){
 			return DBConstants.C_CATEGORY_SHOPPING;			
