@@ -42,6 +42,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			String website = getFieldValue(data, "website");
 			String siteurl = getFieldValue(data, "siteurl");
 			String city = getFieldValue(data, "city");
+			//more consideration
+			if(city.contains(",")){
+				city = "È«¹ú";
+			}
 			String title = getFieldValue(data, "title");
 			String image = getFieldValue(data, "image");
 			String startTimeString = getFieldValue(data, "startTime");
@@ -68,6 +72,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setDetail(detail);
 				product.setRange(range);
 				ProductManager.save(mongoClient, product);
+				product.setCategory(category);
 			}					
 			
 		}		
