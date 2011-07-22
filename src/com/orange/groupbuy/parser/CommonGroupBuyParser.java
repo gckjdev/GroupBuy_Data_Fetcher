@@ -79,8 +79,10 @@ public abstract class CommonGroupBuyParser {
 		Element subElement = e.getChild(fieldName);
 		if (subElement == null)
 			return null;
+		if (subElement.getText().trim().equals(""))
+			return null;
 		else
-			return subElement.getText();
+			return subElement.getText().trim();
 	}
 	
 	public Element getFieldElement(Element e, String... fieldNames){
@@ -121,6 +123,40 @@ public abstract class CommonGroupBuyParser {
 		
 		return elementList;		
 	}
+	
+	public String getFieldBlockString(Element e, String... fieldNames){
+		
+		if (fieldNames == null || fieldNames.length == 0)
+			return null;
+		
+		List<?> elementList = e.getChildren(fieldNames[0]);
+		for (int i=1; i<fieldNames.length; i++){
+
+			if (elementList == null)
+				return null;
+			
+			Iterator<?> it = elementList.iterator();
+			if (it.hasNext() == false)
+				return null;			
+			
+			Element firstElement = (Element)it.next();
+			if (firstElement == null)
+				return null;
+			
+			elementList = firstElement.getChildren(fieldNames[i]);
+		}
+		
+		Iterator<?> it = elementList.iterator();
+		if(it.hasNext() == false){
+			return null;
+		} else{
+			Element subElement = (Element)it.next();
+			return subElement.getText();
+		} 
+			
+	}
+		
+
 	
 	public static CommonGroupBuyParser getParser(int parserType) {
 		
