@@ -239,8 +239,7 @@ public class GenericAddressParser extends CommonAddressParser {
 			System.out.println("<debug> parse str, it's not legal address, skip");
 			return false;
 		}
-			
-		address = str.substring(start, end).trim();
+		
 		if(address.length() > 5 && address.length() < 50){
 			if(addList.indexOf(address) == -1){
 				addList.add(address);
@@ -249,9 +248,9 @@ public class GenericAddressParser extends CommonAddressParser {
 			return true;
 		}
 		else{
-			System.out.println("<debug> parse str, address length "+address.length()+"too short or too long, skip");
+			System.out.println("<debug> parse str, address length "+address.length()+" too short or too long, skip");
 			return false;			
-		}
+		} 
 	}
 	/**
 	 * 
