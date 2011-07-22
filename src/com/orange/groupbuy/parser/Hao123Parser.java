@@ -23,16 +23,11 @@ public class Hao123Parser extends CommonGroupBuyParser {
 
 	
 	@Override
-	public boolean parseElement(Element root){
+	public boolean parseElement(Element root, CommonAddressParser addressParser){
 		List<?> productList = getFieldBlock(root, "url");
 		if (productList == null)
 			return false;
-		
-		CommonAddressParser addressParser = CommonAddressParser.findParserById(siteId);
-		if (addressParser == null){
-			log.severe("cannot find address parser for site = "+siteId);
-		}
-		
+				
 		Iterator<?> it = productList.iterator();
 		while (it.hasNext()){
 			Element productElement = (Element)it.next();
@@ -56,46 +51,33 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			String description = getFieldValue(data, "description");
 			int bought = StringUtil.intFromString(getFieldValue(data, "bought"));
 			String detail = getFieldValue(data, "detail");
+			int major = StringUtil.intFromString(getFieldValue(data, "major"));
+			int category = convertCategory(getFieldValue(data, "category"));
+			List<String> range = StringUtil.stringToList(getFieldValue(data, "range"));
+			List<String> address = StringUtil.stringToList(getFieldValue(data, "address")); 
 			
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
-
-			// for test output only
-			System.out.println("loc="+loc+",website="+website+",siteurl="+siteurl+",city="+city+",title="+title+
-					",image="+image+",startTime="+startTimeString+",endTime="+endTimeString+",value="+value+
-					",price="+price+",description="+description+",bought="+bought+",detail="+detail);
 			
-			// save product into DB
-			Product product = new Product();
-			if (product.setMandantoryFields(city, loc, image, title, startDate, endDate, 
-					price, value, bought, siteId, website, siteurl)){
-				
-				// set extra fields
+			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
+					price, value, bought, siteId, website, siteurl, major, address, addressParser);
+			
+			if (product != null){							
+				// save extra fields
 				product.setDescription(description);
 				product.setDetail(detail);
-				
-				// read address and set address
-				List<String> addressList = addressParser.parseAddress(loc);
-				if (addressList != null && addressList.size() > 0){
-					product.setAddress(addressList);
-				}
-				
-				if (ProductManager.createProduct(mongoClient, product)){		
-					log.info("create product, product id="+product.getId());
-					incSuccessCounter();
-				}
-				else{
-					incFailCounter();
-				}
-			}
-			else{
-				incFailCounter();
-			}
-
+				product.setRange(range);
+				ProductManager.save(mongoClient, product);
+			}					
 			
 		}		
 		
 		return true;
+	}
+
+	@Override
+	public int convertCategory(String category) {		
+		return StringUtil.intFromString(category);
 	}
 
 	

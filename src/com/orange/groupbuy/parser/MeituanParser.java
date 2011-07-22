@@ -9,21 +9,17 @@ import org.jdom.Element;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.addressparser.MeituanAddressParser;
+import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
 public class MeituanParser extends CommonGroupBuyParser {
 	final static String WEBSITE = "美团";
 	@Override
-	public boolean parseElement(Element root) {
+	public boolean parseElement(Element root, CommonAddressParser addressParser) {
 		List<?> productList = getFieldBlock(root, "deals", "deal");
 		if (productList == null)
 			return false;
-		CommonAddressParser addressParser = CommonAddressParser
-				.findParserById(siteId);
-		if (addressParser == null) {
-			log.severe("cannot find address parser for site = " + siteId);
-		}
 
 		Iterator<?> it = productList.iterator();
 		while (it.hasNext()) {
@@ -49,47 +45,49 @@ public class MeituanParser extends CommonGroupBuyParser {
 			//List<String> details = (List<String>) getFieldBlock(data, "detail");
 			//String detail = details.get(0);
 			String detail = "";
+			int major = DBConstants.C_NOT_MAJOR;
 
 			Date startDate = StringUtil.dateFromString(startTimeString);
 			Date endDate = StringUtil.dateFromString(endTimeString);
 
-			// for test output only
-			System.out.println("loc=" + loc + ",website=" + website
-					+ ",siteurl=" + siteurl + ",city=" + city + ",title="
-					+ title + ",image=" + image + ",startTime="
-					+ startTimeString + ",endTime=" + endTimeString + ",value="
-					+ value + ",price=" + price + ",description=" + description
-					+ ",bought=" + bought + ",detail=" + detail);
-
-			// save product into DB
-			Product product = new Product();
-			if (product.setMandantoryFields(city, loc, image, title, startDate,
-					endDate, price, value, bought, siteId, website, siteurl)) {
-
-				// set extra fields
+			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
+					price, value, bought, siteId, website, siteurl, major, null, addressParser);
+			
+			if (product != null){							
+				// save extra fields
 				product.setDescription(description);
 				product.setDetail(detail);
-
-				// read address and set address
-				List<String> addressList = addressParser.parseAddress(loc);
-				if (addressList != null && addressList.size() > 0) {
-					log.info("parser address = "+addressList.get(0));
-					product.setAddress(addressList);
-				}
-
-				if (ProductManager.createProduct(mongoClient, product)) {
-					log.info("create product, product id=" + product.getId());
-					incSuccessCounter();
-				} else {
-					incFailCounter();
-				}
-			} else {
-				incFailCounter();
-			}
+				product.setRange(null);
+				ProductManager.save(mongoClient, product);
+			}		
 
 		}
 
 		return false;
+	}
+
+	@Override
+	public int convertCategory(String category) {
+		if (category == null)
+			return DBConstants.C_CATEGORY_UNKNOWN;			
+		
+		if (category.equalsIgnoreCase("文体娱乐")){
+			return DBConstants.C_CATEGORY_FUN;
+		}
+		else if (category.equalsIgnoreCase("餐饮")){
+			return DBConstants.C_CATEGORY_EAT;
+		}
+		else if (category.equalsIgnoreCase("健康丽人")){
+			return DBConstants.C_CATEGORY_FACE;			
+		}
+		else if (category.equalsIgnoreCase("生活服务")){
+			return DBConstants.C_CATEGORY_SHOPPING;			
+		}
+		else if (category.equalsIgnoreCase("实物")){
+			return DBConstants.C_CATEGORY_SHOPPING;			
+		}
+		
+		return DBConstants.C_CATEGORY_UNKNOWN;
 	}
 
 }
