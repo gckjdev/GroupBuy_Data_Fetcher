@@ -34,7 +34,17 @@ public abstract class CommonGroupBuyParser {
 	final static int PARSER_MEITUAN = 2;
 	final static int PARSER_LASHOU = 3;
 	
+	String encoding = "UTF-8";
 	
+	
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+
 	MongoDBClient mongoClient;
 	String siteId;
 	int insertCounter = 0;
@@ -261,7 +271,9 @@ public abstract class CommonGroupBuyParser {
 			
 			// read address if not given
 			if (addressList == null || addressList.size() == 0){
+				addressParser.setEncoding(getEncoding());
 				addressList = addressParser.parseAddress(loc);
+				
 			}
 
 			// set address

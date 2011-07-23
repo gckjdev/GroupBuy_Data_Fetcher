@@ -9,7 +9,7 @@ import com.orange.groupbuy.constant.DBConstants;
 public abstract class CommonAddressParser {
 
 	Map<String, List<String>> cache = new HashMap<String, List<String>>(); 
-	
+	String encoding = "UTF-8";
 	public List<String> parseAddress(String url){
 		
 		// read from cache
@@ -36,4 +36,15 @@ public abstract class CommonAddressParser {
 		else
 			return new GenericAddressParser();
 	}
+
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
+	}
+	
+	
+
 }

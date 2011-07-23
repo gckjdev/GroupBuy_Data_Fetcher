@@ -20,7 +20,7 @@ public class GenericAddressParser extends CommonAddressParser {
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-			HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();
+			HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();			
 			if (connection != null){
 				long fetchTime = System.currentTimeMillis();
 				Parser parser = new Parser(connection);
@@ -164,7 +164,7 @@ public class GenericAddressParser extends CommonAddressParser {
 		if (str.contains("广场"))
 			score ++;
 		
-		return (score >= 2);
+		return (score >= 3);
 	}
 	/**
 	 * 递归删除script节点
@@ -257,7 +257,7 @@ public class GenericAddressParser extends CommonAddressParser {
 	 */
 	private void find_common_add(Parser parser, String url){
 		try {
-			parser.setEncoding("UTF-8");
+			parser.setEncoding(encoding);
 			NodeList nodes = parser.parse(null);
 			deletJSnode(nodes);
 //			System.out.println("nodes.size() = " + nodes.size());
