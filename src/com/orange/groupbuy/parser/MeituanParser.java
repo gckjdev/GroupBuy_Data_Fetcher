@@ -40,7 +40,11 @@ public class MeituanParser extends CommonGroupBuyParser {
 			int bought = StringUtil.intFromString(getFieldValue(deal, "sales_num"));
 			String startTimeString = getFieldValue(deal, "start_time");
 			String endTimeString = getFieldValue(deal, "end_time");
-			int major = DBConstants.C_NOT_MAJOR;
+			int rank = StringUtil.intFromString(getFieldValue(deal, "deal_rank"));
+			int major = 0;
+			if(rank > 0){
+				major = 1;
+			}
 			String detail = getFieldValue(deal, "deal_tips");
 
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
