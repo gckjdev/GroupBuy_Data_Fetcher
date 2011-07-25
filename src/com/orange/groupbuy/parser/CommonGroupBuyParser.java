@@ -283,7 +283,7 @@ public abstract class CommonGroupBuyParser {
 			
 			if (ProductManager.createProduct(mongoClient, product)){		
 				log.info("create new product success, product = "+product.toString());
-				incCounter(COUNTER_TYPE.INSERT);
+				incCounter(COUNTER_TYPE.INSERT);											
 				return product;
 			}
 			else{

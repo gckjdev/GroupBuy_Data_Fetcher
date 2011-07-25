@@ -10,6 +10,7 @@ import org.jdom.Element;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
+import com.orange.groupbuy.dao.Gps;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
@@ -52,6 +53,10 @@ public class LashouParser extends CommonGroupBuyParser {
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
 			
+			List<String> telList = new LinkedList<String>();
+			List<String> shopNameList = new LinkedList<String>();
+			List<List<Double>> gpsList = new LinkedList<List<Double>>();
+			
 			List<?> shopList = getFieldBlock(data, "shops", "shop");
 			if (shopList != null){
 				Iterator<?> shopListIter = shopList.iterator();
@@ -69,7 +74,18 @@ public class LashouParser extends CommonGroupBuyParser {
 					if (shopAddress != null && shopAddress.length() > 0)
 						address.add(shopAddress);
 					
-					// TODO add longitude/latitude and tel, and shop name					
+					if (shopTel != null & shopTel.length() > 0)
+						telList.add(shopTel);
+					
+					if (shopName != null & shopName.length() > 0)
+						shopNameList.add(shopName);
+
+					if (longitude != null && longitude.length() > 0 &&
+						latitude != null && latitude.length() > 0){
+						Gps gps = new Gps(latitude, longitude);
+						gpsList.add(gps.toDoubleList());
+					}
+					
 				}
 			}
 			
@@ -82,6 +98,10 @@ public class LashouParser extends CommonGroupBuyParser {
 				product.setDetail(detail);
 				product.setRange(range);
 				product.setCategory(category);
+				product.setTel(telList);
+				product.setShopList(shopNameList);
+				product.setGPS(gpsList);
+				
 				ProductManager.save(mongoClient, product);
 			}					
 			
