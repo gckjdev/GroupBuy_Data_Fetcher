@@ -14,8 +14,8 @@ import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.parser.CommonGroupBuyParser;
 import com.orange.groupbuy.parser.FiveEightParser;
 import com.orange.groupbuy.parser.Hao123Parser;
-import com.orange.groupbuy.parser.FtuanParser;
 import com.orange.groupbuy.parser.LashouParser;
+import com.orange.groupbuy.parser.WowoParser;
 
 public class ParserTest {
 
@@ -36,30 +36,17 @@ public class ParserTest {
 		mongoClient = new MongoDBClient("localhost", "groupbuy", "", "");
 		seed = new Random();
 	}
-
-	/*@Test
-	public void test58Parser() {
-
-		String siteId = DBConstants.C_SITE_58;	
-		CommonGroupBuyParser parser = new FiveEightParser();
-		parser.setMongoClient(mongoClient);
-		parser.setSiteId(siteId);
-		
-		// start parsing data file and save data to DB
-		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/4352b860-a8b6-4183-ae66-e30812534ce3.xml");
-		Assert.assertTrue(result);
-	}*/
 	
 	@Test
 	public void testFtuanParser() {
 
-		String siteId = DBConstants.C_SITE_GAOPENG;	
-		CommonGroupBuyParser parser = new Hao123Parser();
+		String siteId = DBConstants.C_SITE_LASHOU;	
+		CommonGroupBuyParser parser = new LashouParser();
 		parser.setMongoClient(mongoClient);
 		parser.setSiteId(siteId);
 		
 		// start parsing data file and save data to DB
-		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/gaopeng.php");
+		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/lashou.xml");
 		Assert.assertTrue(result);
 	}
 }

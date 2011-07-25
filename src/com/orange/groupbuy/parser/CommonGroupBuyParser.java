@@ -272,8 +272,7 @@ public abstract class CommonGroupBuyParser {
 			// read address if not given
 			if (addressList == null || addressList.size() == 0){
 				addressParser.setEncoding(getEncoding());
-				addressList = addressParser.parseAddress(loc);
-				
+				addressList = addressParser.parseAddress(loc);				
 			}
 
 			// set address
