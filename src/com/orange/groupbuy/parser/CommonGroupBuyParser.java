@@ -33,6 +33,26 @@ public abstract class CommonGroupBuyParser {
 	final static int PARSER_HAO123 = 1;
 	final static int PARSER_MEITUAN = 2;
 	final static int PARSER_LASHOU = 3;
+	final static int PARSER_WOWO = 4;
+	final static int PARSER_58 = 5;
+	
+	public static CommonGroupBuyParser getParser(int parserType) {
+		
+		switch (parserType){
+			case PARSER_HAO123:
+				return new Hao123Parser();
+			case PARSER_MEITUAN:
+				return new MeituanParser();
+			case PARSER_LASHOU:
+				return new LashouParser();
+			case PARSER_58:
+				return new FiveEightParser();
+			case PARSER_WOWO:
+				return new WowoParser();
+		}
+		
+		return null;
+	}
 	
 	String encoding = "UTF-8";
 	
@@ -169,19 +189,7 @@ public abstract class CommonGroupBuyParser {
 		
 
 	
-	public static CommonGroupBuyParser getParser(int parserType) {
-		
-		switch (parserType){
-			case PARSER_HAO123:
-				return new Hao123Parser();
-			case PARSER_MEITUAN:
-				return new MeituanParser();
-			case PARSER_LASHOU:
-				return new LashouParser();
-		}
-		
-		return null;
-	}
+	
 
 	public boolean parse(String localFilePath){
 		doParse(localFilePath);

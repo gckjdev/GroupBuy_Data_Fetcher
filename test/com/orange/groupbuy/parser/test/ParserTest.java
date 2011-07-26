@@ -40,13 +40,13 @@ public class ParserTest {
 	@Test
 	public void testFtuanParser() {
 
-		String siteId = DBConstants.C_SITE_LASHOU;	
-		CommonGroupBuyParser parser = new LashouParser();
+		String siteId = DBConstants.C_SITE_DIANPIAN;	
+		CommonGroupBuyParser parser = new Hao123Parser();
 		parser.setMongoClient(mongoClient);
 		parser.setSiteId(siteId);
 		
 		// start parsing data file and save data to DB
-		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/lashou.xml");
+		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/dianping.xml");
 		Assert.assertTrue(result);
 	}
 }

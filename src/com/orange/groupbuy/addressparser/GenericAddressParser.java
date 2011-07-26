@@ -241,8 +241,28 @@ public class GenericAddressParser extends CommonAddressParser {
 		}
 		
 		if(address.length() > 5 && address.length() < 50){
+			// TODO for test
+			int i = 0;
+			if((i = address.lastIndexOf("公交")) != -1){
+				address = address.substring(0, i); 
+			}
+			if((i = address.lastIndexOf("交通")) != -1){
+				address = address.substring(0, i); 
+			}
+			if((i = address.lastIndexOf("联系")) != -1){
+				address = address.substring(0, i); 
+			}
+			if((i = address.lastIndexOf("预订")) != -1){
+				address = address.substring(0, i); 
+			}
+			if((i = address.lastIndexOf("咨询")) != -1){
+				address = address.substring(0, i); 
+			}
+			
 			if(addList.indexOf(address) == -1){
 				addList.add(address);
+				// TODO remove
+				System.out.println("<debug> final result="+address);
 			}
 			
 			return true;
