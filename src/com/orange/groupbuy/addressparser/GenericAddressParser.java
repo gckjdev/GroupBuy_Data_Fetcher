@@ -184,6 +184,12 @@ public class GenericAddressParser extends CommonAddressParser {
 				deletJSnode(children);
 		}
 	}
+	
+	private String clean_address(String address){
+		String ret_address = address.replaceAll("&nbsp;", "");
+		return ret_address;
+	}
+	
 	/**
 	 * 
 	 */
@@ -230,6 +236,9 @@ public class GenericAddressParser extends CommonAddressParser {
 		String[] finalList = address.split("\\s");
 		if (finalList != null && finalList.length > 0)
 			address = finalList[0];
+
+		// clean the noisy data inside address
+		address = clean_address(address);
 		
 		// TODO remove
 		System.out.println("<debug> parse str result="+address);
@@ -239,6 +248,7 @@ public class GenericAddressParser extends CommonAddressParser {
 			System.out.println("<debug> parse str, it's not legal address, skip");
 			return false;
 		}
+		
 		
 		if(address.length() > 5 && address.length() < 50){
 			// TODO for test
