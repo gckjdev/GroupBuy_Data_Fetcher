@@ -28,7 +28,7 @@ public class MeituanParser extends CommonGroupBuyParser {
 				continue;
 			Element deal = getFieldElement(productElement, "deal");
 			String website = getFieldValue(deal, "website");
-			String city = getFieldValue(deal, "city_name");
+			String city = convertCity(getFieldValue(deal, "city_name"));
 			String siteurl = getFieldValue(deal, "city_url");
 			String title = getFieldValue(deal, "deal_title");
 			String loc = getFieldValue(deal, "deal_url");
@@ -76,6 +76,7 @@ public class MeituanParser extends CommonGroupBuyParser {
 				product.setDetail(detail);
 				product.setTel(phoneList);
 				product.setRange(null);
+				product.setCategory(category);
 				ProductManager.save(mongoClient, product);
 			}		
 
@@ -108,4 +109,14 @@ public class MeituanParser extends CommonGroupBuyParser {
 		return DBConstants.C_CATEGORY_UNKNOWN;
 	}
 
+	private String convertCity(String city){
+		if (city == null)
+			return null;
+		
+		if(city.contains(",")){
+			return "È«¹ú";
+		}
+		
+		return city;
+	}
 }
