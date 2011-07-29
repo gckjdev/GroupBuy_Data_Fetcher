@@ -10,12 +10,14 @@ import org.junit.Test;
 
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.groupbuy.addressparser.GenericAddressParser;
+import com.orange.groupbuy.addressparser.MeituanAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.parser.CommonGroupBuyParser;
 import com.orange.groupbuy.parser.FiveEightParser;
 import com.orange.groupbuy.parser.Hao123Parser;
 import com.orange.groupbuy.parser.LashouParser;
-import com.orange.groupbuy.parser.WowoParser;
+import com.orange.groupbuy.parser.MeituanParser;
+import com.orange.groupbuy.parser.Xing800Parser;
 
 public class ParserTest {
 
@@ -40,13 +42,13 @@ public class ParserTest {
 	@Test
 	public void testFtuanParser() {
 
-		String siteId = DBConstants.C_SITE_DIANPIAN;	
-		CommonGroupBuyParser parser = new Hao123Parser();
+		String siteId = DBConstants.C_SITE_XING800;	
+		CommonGroupBuyParser parser = new Xing800Parser();
 		parser.setMongoClient(mongoClient);
 		parser.setSiteId(siteId);
 		
 		// start parsing data file and save data to DB
-		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/dianping.xml");
+		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/xing800.xml");
 		Assert.assertTrue(result);
 	}
 }

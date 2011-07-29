@@ -47,8 +47,6 @@ public abstract class CommonGroupBuyParser {
 				return new LashouParser();
 			case PARSER_58:
 				return new FiveEightParser();
-			case PARSER_WOWO:
-				return new WowoParser();
 		}
 		
 		return null;

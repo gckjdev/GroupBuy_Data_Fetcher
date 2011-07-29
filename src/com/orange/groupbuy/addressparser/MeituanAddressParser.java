@@ -77,7 +77,7 @@ public class MeituanAddressParser extends CommonAddressParser {
 	 */
 	private static boolean isLeagle(String str){
 		boolean flag = false;
-		if(str.contains("区") || str.contains("路")){
+		if(str.contains("区") || str.contains("路") || str.contains("")){
 			flag = true;
 		}
 		return flag;

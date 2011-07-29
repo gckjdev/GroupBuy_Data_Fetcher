@@ -5,305 +5,235 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.htmlparser.Node;
-import org.htmlparser.Parser;
-import org.htmlparser.Tag;
-import org.htmlparser.tags.ScriptTag;
-import org.htmlparser.util.NodeIterator;
-import org.htmlparser.util.NodeList;
-
-import com.sun.xml.internal.bind.v2.runtime.property.StructureLoaderBuilder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class GenericAddressParser extends CommonAddressParser {
+
 	private List<String> addList = new LinkedList<String>();
+
 	@Override
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-			HttpURLConnection connection = (HttpURLConnection)(new URL(url)).openConnection();			
-			if (connection != null){
+			HttpURLConnection connection = (HttpURLConnection) (new URL(url))
+					.openConnection();
+			if (connection != null) {
 				long fetchTime = System.currentTimeMillis();
-				Parser parser = new Parser(connection);
-				long parseStartTime = System.currentTimeMillis();
-				find_common_add(parser, url);
-				long parseEndTime = System.currentTimeMillis();
-				connection.disconnect();
-				
-				System.out.println("<debug> parsing address, network "+(parseStartTime - fetchTime)+
-						" millseconds, parse "+(parseEndTime-parseStartTime)+" millseconds");
+				Document doc = Jsoup.connect(url).get();
+				if (doc != null) {
+					long parseStartTime = System.currentTimeMillis();
+					find_common_add(doc, url);
+					long parseEndTime = System.currentTimeMillis();
+					connection.disconnect();
+					System.out.println("<debug> parsing addrestrs, network "
+							+ (parseStartTime - fetchTime)
+							+ " millseconds, parse "
+							+ (parseEndTime - parseStartTime) + " millseconds");
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
-		} 
+		}
 		return addList;
 	}
+
 	/**
-	 * find the address
-	 * @param str
-	 */
-	private int searchAdd(String str){
-		int cnt = 0;
-		int index = str.indexOf("µÿ÷∑");
-//		System.out.println("enter searchAdd");
-		if(index != -1){
-			String s1 = str.substring(index+3);
-			s1 = s1.trim();
-			String s2 = s1.substring(0, 50);
-			//index of the blank
-			int index2 = s2.indexOf("\\s");
-			if(index2 != -1){
-				String s3 = s2.substring(0, index2);
-				if(isLegal(s3)){
-					boolean result = addtoList(s3);
-					if (result)
-						cnt++;
-				}
-				int len = s3.length();
-				int index3 = str.indexOf(s3);
-				searchAdd(str.substring(index3 + len));
-			} else {
-				addtoList(s2);
-			}
-		}
-		return cnt;
-	}
-	/**
-	 * find the address from «¯,¬∑£®Ω÷£©,∫≈...
 	 * 
 	 */
-	private void searchRoad(String str){
-		String[] ss = null;
-//		System.out.println("enter searchRoad");
-		//split the blank
-		ss = str.split("\\s");
-		if (ss == null)
-			return;
-		
-		int len = ss.length;
-		if(len > 10){
-			int[] scores = new int[len];
-			for(int i=0; i<len; i++)
-				scores[i] = 0;
-			for(int i=0; i<len; i++){
-				if(ss[i].length() > 8 && ss[i].length() < 80){
-					if(ss[i].indexOf(" –") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("«¯") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("¬∑") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("Ω÷") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("µ¿") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("∫≈") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("¬•") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("≤„") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("∆Ã") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("µÍ") != -1)
-						scores[i]++;
-					if(ss[i].indexOf("π„≥°") != -1)
-						scores[i]++;
-				}
-			}
-			// bubble sort
-			int temp;
-			String stemp;
-			for(int i=0; i<scores.length; i++){
-				for(int j=0; j<scores.length-i-1; j++){
-					if(scores[j] < scores[j+1]){
-						temp = scores[j];
-						scores[j] = scores[j+1];
-						scores[j+1] = temp;
-						//swap the string at the same time
-						stemp = ss[j];
-						ss[j] = ss[j+1];
-						ss[j+1] = stemp;
+	private void find_common_add(Document doc, String url) {
+		try {
+			Elements list = (Elements) doc.getElementsByTag("div");
+			for (Element element : list) {
+				String content = element.text();
+				String[] strs = content.split("\\s");
+				if (strs == null)
+					return;
+				int len = strs.length;
+				// TODO
+				for (int i = 0; i < strs.length; i++) {
+					String str = strs[i];
+					int index = str.indexOf("Âú∞ÂùÄÔºö");
+					if (index != -1) {
+						str = str.substring(index + 3);
+						strs[i] = str;
+					}
+					index = str.indexOf("ÁîµËØù");
+					if (index != -1) {
+						str = str.substring(0, index);
+						strs[i] = str;
 					}
 				}
-			}
-			int i=0;
-			//consider the score
-			while(scores[i] >= 3) {
-				addtoList(ss[i]);
-				i++;
-			}		
-		}
-	}
-	/**
-	 * 
-	 */	
-	
-	private boolean isLegal(String str){
-		int score = 0;
-		if(str.contains(" –"))
-			score ++;		
-		if(str.contains("«¯"))
-			score ++;		
-		if (str.contains("¬∑"))
-			score ++;
-		if (str.contains("Ω÷"))
-			score ++;
-		if (str.contains("µÍ"))
-			score ++;
-		if (str.contains("µ¿"))
-			score ++;
-		if (str.contains("∆Ã"))
-			score ++;
-		if (str.contains("∫≈"))
-			score ++;
-		if (str.contains("≤„"))
-			score ++;
-		if (str.contains("¬•"))
-			score ++;
-		if (str.contains("π„≥°"))
-			score ++;
-		
-		return (score >= 3);
-	}
-	/**
-	 * µ›πÈ…æ≥˝scriptΩ⁄µ„
-	 * @param list
-	 */
-	private void deletJSnode(NodeList list) {
-		for (int i = 0; i < list.size(); i++) {
-			Node node = list.elementAt(i);
-			if (node instanceof Tag) {
-				if (node instanceof ScriptTag) {
-					list.remove(i);
-					continue;
+				int[] scores = new int[len];
+				for (int i = 0; i < len; i++)
+					scores[i] = 0;
+				for (int i = 0; i < len; i++) {
+					if (strs[i].length() > 8 && strs[i].length() < 80) {
+						scores[i] = addScore(strs[i]);
+					}
 				}
-			}
-			NodeList children = node.getChildren();
-			if (children != null && children.size() > 0)
-				deletJSnode(children);
-		}
-	}
-	
-	private String clean_address(String address){
-		String ret_address = address.replaceAll("&nbsp;", "");
-		return ret_address;
-	}
-	
-	/**
-	 * 
-	 */
-	private boolean addtoList(String str){	// return true if a valid address is found
-		str = str.trim();
-		int len = str.length();
-		if (len <= 0)
-			return false;
-		
-		int index_add = str.indexOf("µÿ÷∑");
-		int index_yuyue = str.indexOf("‘§‘º");
-		int index_phone = str.indexOf("µÁª∞");
-		
-		int start = 0;
-		int end = str.length();
-		if(index_add != -1){
-			start = index_add + 3;
-			if(start > str.length()){
-				start = str.length();
-			}
-		}
-
-		if(index_yuyue != -1){
-			end = index_yuyue;
-		} else if(index_phone != -1){
-			end = index_phone;
-		}
-		
-		if (start >= len){
-			start = len - 1;
-		}
-		if (end <= 0){
-			end = start;
-		}
-		
-		if (start > end){
-			end = len - 1;
-		}
-
-		// TODO remove
-		System.out.println("<debug> parse str="+str+", start="+start+",end="+end);
-		
-		String address = str.substring(start, end);
-		String[] finalList = address.split("\\s");
-		if (finalList != null && finalList.length > 0)
-			address = finalList[0];
-
-		// clean the noisy data inside address
-		address = clean_address(address);
-		
-		// TODO remove
-		System.out.println("<debug> parse str result="+address);
-
-		if (!isLegal(address)){
-			// TODO remove
-			System.out.println("<debug> parse str, it's not legal address, skip");
-			return false;
-		}
-		
-		
-		if(address.length() > 5 && address.length() < 50){
-			// TODO for test
-			int i = 0;
-			if((i = address.lastIndexOf("π´Ωª")) != -1){
-				address = address.substring(0, i); 
-			}
-			if((i = address.lastIndexOf("ΩªÕ®")) != -1){
-				address = address.substring(0, i); 
-			}
-			if((i = address.lastIndexOf("¡™œµ")) != -1){
-				address = address.substring(0, i); 
-			}
-			if((i = address.lastIndexOf("‘§∂©")) != -1){
-				address = address.substring(0, i); 
-			}
-			if((i = address.lastIndexOf("◊…—Ø")) != -1){
-				address = address.substring(0, i); 
-			}
-			
-			if(addList.indexOf(address) == -1){
-				addList.add(address);
-				// TODO remove
-				System.out.println("<debug> final result="+address);
-			}
-			
-			return true;
-		}
-		else{
-			System.out.println("<debug> parse str, address length "+address.length()+" too short or too long, skip");
-			return false;			
-		} 
-	}
-	/**
-	 * 
-	 */
-	private void find_common_add(Parser parser, String url){
-		try {
-			parser.setEncoding(encoding);
-			NodeList nodes = parser.parse(null);
-			deletJSnode(nodes);
-//			System.out.println("nodes.size() = " + nodes.size());
-			for (NodeIterator i = nodes.elements(); i.hasMoreNodes(); ) {
-				Node node = i.nextNode();
-				String text = node.toPlainTextString();
-				int cnt = searchAdd(text);
-				if(cnt == 0){
-					searchRoad(text);
+				// bubble sort
+				int temp;
+				String stemp;
+				for (int i = 0; i < scores.length; i++) {
+					for (int j = 0; j < scores.length - i - 1; j++) {
+						if (scores[j] < scores[j + 1]) {
+							temp = scores[j];
+							scores[j] = scores[j + 1];
+							scores[j + 1] = temp;
+							// swap the string at the same time
+							stemp = strs[j];
+							strs[j] = strs[j + 1];
+							strs[j + 1] = stemp;
+						}
+					}
 				}
+				int i = 0;
+				// consider the score
+				for (i = 0; i < len; i++) {
+					if (scores[i] >= 3) {
+						addtoList(strs[i]);
+					}
+				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 
-	
+	/**
+	 * 
+	 */
+	private boolean addtoList(String str) { // return true if a valid address is
+											// found
+		str = str.trim();
+		int len = str.length();
+		if (len <= 0)
+			return false;
+		int index = str.indexOf("Âú∞ÂùÄ");
+		if (index != -1) {
+			str = str.substring(index + 3);
+		}
+		
+		// delete the illegal string
+		str = delString(str);
+
+		// TODO remove
+		System.out.println("<debug> parse str result=" + str);
+
+		if (str.length() > 5 && str.length() < 50) {
+			if (str.contains("Ôºå") || str.contains("„ÄÇ") || (addScore(str) >= 2)) {
+				System.out.println("<debug> have the illegal code= " + str);
+			} else if (addList.indexOf(str) == -1) {
+				addList.add(str);
+				// TODO remove
+				System.out.println("<debug> final result=" + str);
+			} else {
+				System.out.println("<debug> have the same address!");
+			}
+			return true;
+		} else {
+			System.out.println("<debug> parse str, address length "
+					+ str.length() + " too short or too long, skip");
+			return false;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private int addScore(String str) {
+		int score = 0;
+		if (str.contains("Â∏Ç"))
+			score++;
+		if (str.contains("Âå∫"))
+			score++;
+		if (str.contains("Ë∑Ø"))
+			score++;
+		if (str.contains("Ë°ó"))
+			score++;
+		if (str.contains("Â∫ó"))
+			score++;
+		if (str.contains("ÈÅì"))
+			score++;
+		if (str.contains("Èì∫"))
+			score++;
+		if (str.contains("Âè∑"))
+			score++;
+		if (str.contains("Â±Ç"))
+			score++;
+		if (str.contains("Ê•º"))
+			score++;
+		if (str.contains("ÂπøÂú∫"))
+			score++;
+
+		return score;
+	}
+
+	/**
+	 * 
+	 */
+	private String delString(String str) {
+		int index = 0;
+		// TODO for gaopang
+		str = str.replace("¬†", "");
+		// TODO for meituan
+		index = str.indexOf("Â∫óÔºö");
+		if (index != -1) {
+			str = str.substring(index + 2);
+		}
+		index = str.indexOf("ÔºàÊü•ÁúãÂú∞ÂõæÔºâ");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		// TODO for manzuo
+		index = str.indexOf("ÂÖ¨‰∫§‰ø°ÊÅØ");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("ËÅîÁ≥ª");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("ËÅîÁªú");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("Âí®ËØ¢");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("È¢ÑËÆ¢");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("È¢ÑÁ∫¶");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("ÂÖ¨‰∫§");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("ÂÆ¢Êúç");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("Ëê•‰∏ö");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("‰∫§ÈÄö");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+
+		return str;
+	}
+
 }
