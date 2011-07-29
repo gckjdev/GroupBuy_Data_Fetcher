@@ -30,10 +30,6 @@ public abstract class CommonAddressParser {
 	public abstract List<String> doParseAddress(String url);
 
 	public static CommonAddressParser findParserById(String siteId){
-		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_MEITUAN)){
-			return new MeituanAddressParser();
-		}
-		else
 			return new GenericAddressParser();
 	}
 
