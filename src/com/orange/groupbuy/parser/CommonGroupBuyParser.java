@@ -36,6 +36,11 @@ public abstract class CommonGroupBuyParser {
 	final static int PARSER_LASHOU = 3;
 	final static int PARSER_WOWO = 4;
 	final static int PARSER_58 = 5;
+	final static int PARSER_DIANPING = 6;
+	final static int PARSER_DIDA = 7;
+	final static int PARSER_HAOTEHUI = 8;
+	final static int PARSER_TUANHAO = 9;
+	final static int PARSER_XING800 = 10;
 	
 	public static CommonGroupBuyParser getParser(int parserType) {
 		
@@ -48,6 +53,16 @@ public abstract class CommonGroupBuyParser {
 				return new LashouParser();
 			case PARSER_58:
 				return new FiveEightParser();
+			case PARSER_DIANPING:
+				return new DianpingParser();
+			case PARSER_DIDA:
+				return new DidaParser();
+			case PARSER_HAOTEHUI:
+				return new HaotehuiParser();
+			case PARSER_TUANHAO:
+				return new TuanhaoParser();
+			case PARSER_XING800:
+				return new Xing800Parser();
 		}
 		
 		return null;
