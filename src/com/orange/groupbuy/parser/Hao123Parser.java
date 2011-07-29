@@ -71,6 +71,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setCategory(category);
 				ProductManager.save(mongoClient, product);
 				product.setCategory(category);
+				product.setWapLoc(generateWapLoc(loc));
 			}					
 			
 		}		
@@ -101,6 +102,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		}
 		
 		return city;
+	}
+
+	public String generateWapLoc(String loc) {
+		return null;
 	}
 	
 

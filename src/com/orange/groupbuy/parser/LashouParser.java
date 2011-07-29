@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.antlr.grammar.v3.ANTLRv3Parser.element_return;
 import org.jdom.Element;
 
 import com.orange.common.utils.StringUtil;
@@ -101,6 +103,7 @@ public class LashouParser extends CommonGroupBuyParser {
 				product.setTel(telList);
 				product.setShopList(shopNameList);
 				product.setGPS(gpsList);
+				product.setWapLoc(generateWapLoc(loc));
 				
 				ProductManager.save(mongoClient, product);
 			}					
@@ -135,6 +138,16 @@ public class LashouParser extends CommonGroupBuyParser {
 		return DBConstants.C_CATEGORY_UNKNOWN;
 	}
 
-	
+	@Override
+	public String generateWapLoc(String loc) {
+		
+		final String basicwapURL = "http://m.lashou.com/action/index.php?func=show_one&id=";
+		String id = getIDFromWeb("deal/", ".html", loc);
+		if(id == null)
+			return null;
+		else 
+			return basicwapURL.concat(id);
+	}
+
 
 }

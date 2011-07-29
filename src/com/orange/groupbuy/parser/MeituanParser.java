@@ -119,4 +119,10 @@ public class MeituanParser extends CommonGroupBuyParser {
 		
 		return city;
 	}
+
+	@Override
+	public String generateWapLoc(String webURL) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

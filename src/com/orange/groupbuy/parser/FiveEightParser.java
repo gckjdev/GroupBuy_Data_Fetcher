@@ -99,4 +99,11 @@ public class FiveEightParser extends CommonGroupBuyParser {
 		}
 	}
 
+	@Override
+	public String generateWapLoc(String webURL) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

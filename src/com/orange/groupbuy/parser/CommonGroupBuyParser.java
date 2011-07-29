@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -235,6 +236,8 @@ public abstract class CommonGroupBuyParser {
 	public abstract boolean parseElement(Element root, CommonAddressParser addressParser);
 	
 	public abstract int convertCategory(String category);
+	
+	public abstract String generateWapLoc(String webURL);
 
 	public void setMongoClient(MongoDBClient mongoClient) {
 		this.mongoClient = mongoClient;
@@ -307,5 +310,39 @@ public abstract class CommonGroupBuyParser {
 		}		
 	}
 	
+	/**
+	 * 字符串分割
+	 * @param expression
+	 *            正则表达式字符串
+	 * @param text
+	 *            要进行分割操作的字符串
+	 */
+	public static String[] splitText(String Expression, String text) {
+		Pattern p = Pattern.compile(Expression); // 正则表达式
+		String[] a = p.split(text);
+		return a;
+	}
+	/**
+	 * 
+	 */
+	public String getIDFromWeb(String prefixExpression, String suffixExpression, String webURL) {
+		if(prefixExpression == null)
+			return null;
+		
+		String[] str = splitText(prefixExpression, webURL); 
+		String wapURL = null;
+		String id = null;
+		if (str.length >= 2) {
+			if(suffixExpression == null) {
+				id = str[1];
+			} else {
+				String[] ids = splitText(suffixExpression, str[1]);
+				if(ids.length >= 1){
+					 id = ids[0];
+				} 
+			}	
+		 } 
+		return id;
+	}
 	
 }
