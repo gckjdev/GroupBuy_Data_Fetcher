@@ -17,7 +17,6 @@ import com.orange.groupbuy.parser.FiveEightParser;
 import com.orange.groupbuy.parser.Hao123Parser;
 import com.orange.groupbuy.parser.LashouParser;
 import com.orange.groupbuy.parser.MeituanParser;
-import com.orange.groupbuy.parser.Xing800Parser;
 
 public class ParserTest {
 

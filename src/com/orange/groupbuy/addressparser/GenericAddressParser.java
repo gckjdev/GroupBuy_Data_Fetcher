@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,23 +19,23 @@ public class GenericAddressParser extends CommonAddressParser {
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-			HttpURLConnection connection = (HttpURLConnection) (new URL(url))
-					.openConnection();
-			if (connection != null) {
+//			HttpURLConnection connection = (HttpURLConnection) (new URL(url))
+//					.openConnection();
+//			if (connection != null) {
 				long fetchTime = System.currentTimeMillis();
-				Document doc = Jsoup.connect(url).get();
+				Connection connection = Jsoup.connect(url).timeout(3000);
+				Document doc = connection.get();
 				if (doc != null) {
 					long parseStartTime = System.currentTimeMillis();
 					find_common_add(doc, url);
 					long parseEndTime = System.currentTimeMillis();
-					connection.disconnect();
 					System.out.println("<debug> parsing addrestrs, network "
 							+ (parseStartTime - fetchTime)
 							+ " millseconds, parse "
 							+ (parseEndTime - parseStartTime) + " millseconds");
 				}
-
-			}
+//				connection.disconnect();
+//			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -127,7 +128,7 @@ public class GenericAddressParser extends CommonAddressParser {
 		System.out.println("<debug> parse str result=" + str);
 
 		if (str.length() > 5 && str.length() < 50) {
-			if (str.contains("，") || str.contains("。") || (addScore(str) >= 2)) {
+			if (str.contains("，") || str.contains("。")) {
 				System.out.println("<debug> have the illegal code= " + str);
 			} else if (addList.indexOf(str) == -1) {
 				addList.add(str);

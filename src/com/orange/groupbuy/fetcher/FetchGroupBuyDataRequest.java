@@ -13,7 +13,7 @@ import com.orange.groupbuy.parser.CommonGroupBuyParser;
 
 public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 
-	public static String DEFAULT_FILE_PATH = "C:/Temp/groupbuy_raw_file/";	
+	public static String DEFAULT_FILE_PATH = "./data/";	
 	DBObject task;
 	
 	@Override
@@ -38,7 +38,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		// get parser for parsing data
 		int parseType = ((Double)task.get(DBConstants.F_TASK_PARSER_TYPE)).intValue();
 		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);		
-		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(parseType);
+		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId);
 		parser.setMongoClient(mongoClient);
 		parser.setSiteId(siteId);
 		

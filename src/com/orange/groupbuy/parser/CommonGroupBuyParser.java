@@ -16,6 +16,7 @@ import org.jdom.input.SAXBuilder;
 
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
+import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
@@ -42,6 +43,7 @@ public abstract class CommonGroupBuyParser {
 	final static int PARSER_TUANHAO = 9;
 	final static int PARSER_XING800 = 10;
 	
+	@Deprecated
 	public static CommonGroupBuyParser getParser(int parserType) {
 		
 		switch (parserType){
@@ -61,11 +63,35 @@ public abstract class CommonGroupBuyParser {
 				return new HaotehuiParser();
 			case PARSER_TUANHAO:
 				return new TuanhaoParser();
-			case PARSER_XING800:
-				return new Xing800Parser();
 		}
 		
 		return null;
+	}
+	
+	public static CommonGroupBuyParser getParser(String siteId) {
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_DIANPIAN))
+			return new DianpingParser();
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_MEITUAN))
+			return new MeituanParser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_DIDA))
+			return new DidaParser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_58))
+			return new FiveEightParser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_HAOTEHUI))
+			return new HaotehuiParser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_LASHOU))
+			return new LashouParser();
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_TUANHAO))
+			return new TuanhaoParser();
+
+		return new Hao123Parser();			
 	}
 	
 	String encoding = "UTF-8";
@@ -345,7 +371,6 @@ public abstract class CommonGroupBuyParser {
 			return null;
 		
 		String[] str = splitText(prefixExpression, webURL); 
-		String wapURL = null;
 		String id = null;
 		if (str.length >= 2) {
 			if(suffixExpression == null) {
