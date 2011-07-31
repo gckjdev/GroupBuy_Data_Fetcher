@@ -1,7 +1,10 @@
 package com.orange.groupbuy.addressparser;
 
+import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,10 +14,29 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.orange.common.utils.DateUtil;
+import com.orange.common.utils.http.HttpDownload;
+
 public class GenericAddressParser extends CommonAddressParser {
 
+	
+	
 	private List<String> addList = new LinkedList<String>();
 
+	final static String DEFAULT_TEMP_ADDRESS_PATH = "./data/temp/address/";
+	
+	private synchronized String getAddressTempFilePath(){
+					
+		String dateDir = DateUtil.dateToStringByFormat(new Date(), "yyyyMM");
+		String path = DEFAULT_TEMP_ADDRESS_PATH.concat(dateDir).concat("/");
+		
+		File file = new File(path);
+		if (!file.exists())
+			file.mkdirs();
+		
+		return path;
+	}
+	
 	@Override
 	public List<String> doParseAddress(String url) {
 		try {
@@ -23,13 +45,31 @@ public class GenericAddressParser extends CommonAddressParser {
 //					.openConnection();
 //			if (connection != null) {
 				long fetchTime = System.currentTimeMillis();
-				Connection connection = Jsoup.connect(url).timeout(3000);
-				Document doc = connection.get();
+				
+				String fileDir = getAddressTempFilePath();
+				String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
+				File file = new File(filePath);
+				if (!file.exists()){
+					boolean result = HttpDownload.downloadFile(url, filePath);
+					if (result == false){
+						log.severe("<doParseAddress> fail to download file for parsing address, file = "+filePath);
+						return null;
+					}
+					
+					file = new File(filePath);
+					if (!file.exists()){						
+						log.severe("<doParseAddress> download file OK but cannot read file, file = "+filePath);
+						return null;
+					}
+				}
+				
+//				Connection connection = Jsoup.connect(url).timeout(20*1000);				
+				Document doc = Jsoup.parse(file, getEncoding());;
 				if (doc != null) {
 					long parseStartTime = System.currentTimeMillis();
 					find_common_add(doc, url);
 					long parseEndTime = System.currentTimeMillis();
-					System.out.println("<debug> parsing addrestrs, network "
+					log.info("<doParseAddress> parsing addrestrs, network "
 							+ (parseStartTime - fetchTime)
 							+ " millseconds, parse "
 							+ (parseEndTime - parseStartTime) + " millseconds");
@@ -37,6 +77,7 @@ public class GenericAddressParser extends CommonAddressParser {
 //				connection.disconnect();
 //			}
 		} catch (Exception e) {
+			log.severe("<doParseAddress> catch exception = "+e.toString());
 			e.printStackTrace();
 			return null;
 		}

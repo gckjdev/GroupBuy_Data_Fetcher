@@ -13,6 +13,7 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 import org.htmlparser.util.ParserException;
 
+@Deprecated
 public class MeituanAddressParser extends CommonAddressParser {
 	private List<String> addList = new LinkedList<String>();
 	@Override
