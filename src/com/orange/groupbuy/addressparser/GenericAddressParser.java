@@ -23,7 +23,6 @@ public class GenericAddressParser extends CommonAddressParser {
 			if (connection != null) {
 				long fetchTime = System.currentTimeMillis();
 				Document doc = Jsoup.connect(url).get();
-				Document doc = connection.get();
 				if (doc != null) {
 					long parseStartTime = System.currentTimeMillis();
 					find_common_add(doc, url);
@@ -58,7 +57,7 @@ public class GenericAddressParser extends CommonAddressParser {
 				// TODO
 				for (int i = 0; i < strs.length; i++) {
 					String str = strs[i];
-					int index = str.indexOf("åœ°å€ï¼?);
+					int index = str.indexOf("åœ°å€ï¼š");
 					if (index != -1) {
 						str = str.substring(index + 3);
 						strs[i] = str;
@@ -128,7 +127,7 @@ public class GenericAddressParser extends CommonAddressParser {
 		System.out.println("<debug> parse str result=" + str);
 
 		if (str.length() > 5 && str.length() < 50) {
-			if (str.contains("ï¼?) || str.contains("ã€?) || (addScore(str) < 2)) {
+			if (str.contains("ã€‚") || str.contains("ï¼Œ") || (addScore(str) < 2)) {
 				System.out.println("<debug> have the illegal code= " + str);
 			} else if (addList.indexOf(str) == -1) {
 				addList.add(str);
@@ -150,25 +149,25 @@ public class GenericAddressParser extends CommonAddressParser {
 	 */
 	private int addScore(String str) {
 		int score = 0;
-		if (str.contains("å¸?))
+		if (str.contains("å¸‚"))
 			score++;
-		if (str.contains("åŒ?))
+		if (str.contains("åŒº"))
 			score++;
-		if (str.contains("è·?))
+		if (str.contains("è·¯"))
 			score++;
-		if (str.contains("è¡?))
+		if (str.contains("è¡—"))
 			score++;
-		if (str.contains("åº?))
+		if (str.contains("é“"))
 			score++;
-		if (str.contains("é?))
+		if (str.contains("å·"))
 			score++;
-		if (str.contains("é“?))
+		if (str.contains("æ¥¼"))
 			score++;
-		if (str.contains("å?))
+		if (str.contains("å··"))
 			score++;
-		if (str.contains("å±?))
+		if (str.contains("å±‚"))
 			score++;
-		if (str.contains("æ¥?))
+		if (str.contains("é“º"))
 			score++;
 		if (str.contains("å¹¿åœº"))
 			score++;
@@ -229,7 +228,7 @@ public class GenericAddressParser extends CommonAddressParser {
 		if (index != -1) {
 			str = str.substring(0, index);
 		}
-		index = str.indexOf("äº¤é?");
+		index = str.indexOf("äº¤é€š");
 		if (index != -1) {
 			str = str.substring(0, index);
 		}

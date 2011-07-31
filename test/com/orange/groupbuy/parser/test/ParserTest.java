@@ -17,7 +17,7 @@ import com.orange.groupbuy.parser.FiveEightParser;
 import com.orange.groupbuy.parser.Hao123Parser;
 import com.orange.groupbuy.parser.LashouParser;
 import com.orange.groupbuy.parser.MeituanParser;
-import com.orange.groupbuy.parser.Xing800Parser;
+import com.orange.groupbuy.parser.SouhuParser;
 
 public class ParserTest {
 
@@ -42,13 +42,13 @@ public class ParserTest {
 	@Test
 	public void testFtuanParser() {
 
-		String siteId = DBConstants.C_SITE_LASHOU;	
-		CommonGroupBuyParser parser = new LashouParser();
+		String siteId = DBConstants.C_SITE_SINA;	
+		CommonGroupBuyParser parser = new Hao123Parser();
 		parser.setMongoClient(mongoClient);
 		parser.setSiteId(siteId);
 		
 		// start parsing data file and save data to DB
-		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/lashou.xml");
+		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/xinlang.xml");
 		Assert.assertTrue(result);
 	}
 }

@@ -100,7 +100,7 @@ public class FiveEightParser extends CommonGroupBuyParser {
 	}
 
 	@Override
-	public String generateWapLoc(String webURL) {
+	public String generateWapLoc(String webURL, String imageURL) {
 		// TODO Auto-generated method stub
 		return null;
 	}

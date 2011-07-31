@@ -77,6 +77,7 @@ public class MeituanParser extends CommonGroupBuyParser {
 				product.setTel(phoneList);
 				product.setRange(null);
 				product.setCategory(category);
+				product.setWapLoc(generateWapLoc(loc, image));
 				ProductManager.save(mongoClient, product);
 			}		
 
@@ -121,8 +122,53 @@ public class MeituanParser extends CommonGroupBuyParser {
 	}
 
 	@Override
-	public String generateWapLoc(String webURL) {
-		// TODO Auto-generated method stub
-		return null;
+	public String generateWapLoc(String webURL, String imageURL) {
+		// web:http://bj.meituan.com/deal/836299.html
+		// wap:http://m.meituan.com/beijing/deal/836299.html
+		
+		String simpleCity = getIDFromWeb("http://", ".meituan", webURL);
+		String city = "";
+		String id = "";
+		String wapURL = null;
+		if(simpleCity == null)
+			return null;
+		if(simpleCity.equals("bj")){
+			city = "beijing";
+		}
+		if(simpleCity.equals("sh")){
+			city = "shanghai";
+		}
+		if(simpleCity.equals("gz")){
+			city = "guangzhou";
+		}
+		if(simpleCity.equals("cd")){
+			city = "chengdu";
+		}
+		if(simpleCity.equals("tj")){
+			city = "tianjin";
+		}
+		if(simpleCity.equals("wh")){
+			city = "wuhan";
+		}
+		if(simpleCity.equals("nj")){
+			city = "nanjing";
+		}
+		if(simpleCity.equals("sz")){
+			city = "shenzhen";
+		}
+		if(simpleCity.equals("hz")){
+			city = "hangzhou";
+		}
+		if(simpleCity.equals("xa")){
+			city = "xian";
+		}
+		if(!city.isEmpty()){
+			id = getIDFromWeb("deal/", ".html", webURL);
+			if(id.isEmpty() || id == null)
+				return null;
+			wapURL = "http://m.meituan.com/".concat(city).concat("/deal/").concat(id).concat(".html");
+		}
+		
+		return wapURL;
 	}
 }

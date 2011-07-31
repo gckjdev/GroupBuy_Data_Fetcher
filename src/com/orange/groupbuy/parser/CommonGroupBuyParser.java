@@ -91,6 +91,12 @@ public abstract class CommonGroupBuyParser {
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_TUANHAO))
 			return new TuanhaoParser();
 
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_SOUHU))
+			return new SouhuParser();
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_NUOMI))
+			return new NuomiParser();
+		
 		return new Hao123Parser();			
 	}
 	
@@ -278,7 +284,7 @@ public abstract class CommonGroupBuyParser {
 	
 	public abstract int convertCategory(String category);
 	
-	public abstract String generateWapLoc(String webURL);
+	public abstract String generateWapLoc(String webURL, String imageURL);
 
 	public void setMongoClient(MongoDBClient mongoClient) {
 		this.mongoClient = mongoClient;
