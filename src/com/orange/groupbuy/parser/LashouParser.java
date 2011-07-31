@@ -103,7 +103,7 @@ public class LashouParser extends CommonGroupBuyParser {
 				product.setTel(telList);
 				product.setShopList(shopNameList);
 				product.setGPS(gpsList);
-				product.setWapLoc(generateWapLoc(loc));
+				product.setWapLoc(generateWapLoc(loc, image));
 				
 				ProductManager.save(mongoClient, product);
 			}					
@@ -139,7 +139,7 @@ public class LashouParser extends CommonGroupBuyParser {
 	}
 
 	@Override
-	public String generateWapLoc(String loc) {
+	public String generateWapLoc(String loc, String imageURL) {
 		
 		final String basicwapURL = "http://m.lashou.com/action/index.php?func=show_one&id=";
 		String id = getIDFromWeb("deal/", ".html", loc);

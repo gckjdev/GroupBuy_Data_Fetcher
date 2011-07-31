@@ -3,7 +3,7 @@ package com.orange.groupbuy.parser;
 public class DianpingParser extends Hao123Parser {
 
 	@Override
-	public String generateWapLoc(String loc) {
+	public String generateWapLoc(String loc,String imageURL) {
 		
 		final String prefixWapURL = "http://m.t.dianping.com/deal/";
 		final String suffixWapURL = "?cityid=*&agent=*&version=*&screen=*&token=*&tag=deal";

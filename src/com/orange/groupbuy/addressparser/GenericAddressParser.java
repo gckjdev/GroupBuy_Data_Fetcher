@@ -1,14 +1,11 @@
 package com.orange.groupbuy.addressparser;
 
 import java.io.File;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -41,41 +38,37 @@ public class GenericAddressParser extends CommonAddressParser {
 	public List<String> doParseAddress(String url) {
 		try {
 			addList.clear();
-//			HttpURLConnection connection = (HttpURLConnection) (new URL(url))
-//					.openConnection();
-//			if (connection != null) {
-				long fetchTime = System.currentTimeMillis();
-				
-				String fileDir = getAddressTempFilePath();
-				String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
-				File file = new File(filePath);
-				if (!file.exists()){
-					boolean result = HttpDownload.downloadFile(url, filePath);
-					if (result == false){
-						log.severe("<doParseAddress> fail to download file for parsing address, file = "+filePath);
-						return null;
-					}
-					
-					file = new File(filePath);
-					if (!file.exists()){						
-						log.severe("<doParseAddress> download file OK but cannot read file, file = "+filePath);
-						return null;
-					}
+			long fetchTime = System.currentTimeMillis();
+
+			String fileDir = getAddressTempFilePath();
+			String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
+			File file = new File(filePath);
+			if (!file.exists()){
+				boolean result = HttpDownload.downloadFile(url, filePath);
+				if (result == false){
+					log.severe("<doParseAddress> fail to download file for parsing address, file = "+filePath);
+					return null;
 				}
 				
+				file = new File(filePath);
+				if (!file.exists()){						
+					log.severe("<doParseAddress> download file OK but cannot read file, file = "+filePath);
+					return null;
+				}
+			}
+			
 //				Connection connection = Jsoup.connect(url).timeout(20*1000);				
-				Document doc = Jsoup.parse(file, getEncoding());;
-				if (doc != null) {
-					long parseStartTime = System.currentTimeMillis();
-					find_common_add(doc, url);
-					long parseEndTime = System.currentTimeMillis();
-					log.info("<doParseAddress> parsing addrestrs, network "
-							+ (parseStartTime - fetchTime)
-							+ " millseconds, parse "
-							+ (parseEndTime - parseStartTime) + " millseconds");
-				}
-//				connection.disconnect();
-//			}
+			Document doc = Jsoup.parse(file, getEncoding());;
+			if (doc != null) {
+				long parseStartTime = System.currentTimeMillis();
+				find_common_add(doc, url);
+				long parseEndTime = System.currentTimeMillis();
+				log.info("<doParseAddress> parsing addrestrs, network "
+						+ (parseStartTime - fetchTime)
+						+ " millseconds, parse "
+						+ (parseEndTime - parseStartTime) + " millseconds");
+			}
+
 		} catch (Exception e) {
 			log.severe("<doParseAddress> catch exception = "+e.toString());
 			e.printStackTrace();
@@ -169,7 +162,7 @@ public class GenericAddressParser extends CommonAddressParser {
 		System.out.println("<debug> parse str result=" + str);
 
 		if (str.length() > 5 && str.length() < 50) {
-			if (str.contains("，") || str.contains("。")) {
+			if (str.contains("。") || str.contains("，") || (addScore(str) < 2)) {
 				System.out.println("<debug> have the illegal code= " + str);
 			} else if (addList.indexOf(str) == -1) {
 				addList.add(str);
@@ -199,17 +192,17 @@ public class GenericAddressParser extends CommonAddressParser {
 			score++;
 		if (str.contains("街"))
 			score++;
-		if (str.contains("店"))
-			score++;
 		if (str.contains("道"))
-			score++;
-		if (str.contains("铺"))
 			score++;
 		if (str.contains("号"))
 			score++;
+		if (str.contains("楼"))
+			score++;
+		if (str.contains("巷"))
+			score++;
 		if (str.contains("层"))
 			score++;
-		if (str.contains("楼"))
+		if (str.contains("铺"))
 			score++;
 		if (str.contains("广场"))
 			score++;
