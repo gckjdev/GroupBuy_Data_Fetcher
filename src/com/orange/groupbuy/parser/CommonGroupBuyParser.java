@@ -333,17 +333,40 @@ public abstract class CommonGroupBuyParser {
 		Product product;
 		product = ProductManager.findProduct(mongoClient, loc, city);
 		if (product != null){
+			
+			boolean updateFlag = false;
+			
 			// update bought
 			if (product.getBought() != bought){
 				product.setBought(bought);
+				updateFlag = true;				
+			}
+			
+			// update address if product has no address, this might caused by address parsing failure last time
+			List<String> list = product.getAddress();
+			if (list == null || list.size() == 0){
+
+				// try fetch from HTML page
+				addressList = addressParser.parseAddress(loc);					
+				if (addressList != null && addressList.size() > 0){
+					product.setAddress(addressList);
+					updateFlag = true;					
+					incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+				}
+				else{
+					log.warning("fail to get address for product="+product.toString());
+					incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+				}
+			}			
+			
+			if (updateFlag){
+				incCounter(COUNTER_TYPE.UPDATE);
 				log.info("update existing product, product = "+product.toString());
 				ProductManager.save(mongoClient, product);
-				
-				incCounter(COUNTER_TYPE.UPDATE);
 			}
 			else{
 				log.info("product exist, no need to update, product id="+product.getObjectId());
-				incCounter(COUNTER_TYPE.EXIST);				
+				incCounter(COUNTER_TYPE.EXIST);
 			}
 
 			return null;

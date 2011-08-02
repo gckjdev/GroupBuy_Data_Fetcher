@@ -85,9 +85,9 @@ public class FiveEightParser extends CommonGroupBuyParser {
 	public Date dateFromString(String str){
 		try {
 			
-			str = str.replaceAll("Äê", "-");
-			str = str.replaceAll("ÔÂ", "-");
-			str = str.replaceAll("ÈÕ", "");
+			str = str.replaceAll("å¹´", "-");
+			str = str.replaceAll("æœˆ", "-");
+			str = str.replaceAll("æ—¥", "");
 			
 			SimpleDateFormat myFormatter = new SimpleDateFormat("yyyy-MM-dd");
 			Date date = myFormatter.parse(str);

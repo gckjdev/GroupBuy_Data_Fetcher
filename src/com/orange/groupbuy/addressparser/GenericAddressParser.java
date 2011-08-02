@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,31 +43,31 @@ public class GenericAddressParser extends CommonAddressParser {
 			addList.clear();
 			long fetchTime = System.currentTimeMillis();
 
-			String fileDir = getAddressTempFilePath();
-			String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
-			//TODO
-//			System.out.println("<deubg> filePath = " + filePath);
-			File file = new File(filePath);
-			if (!file.exists()){
-				boolean result = HttpDownload.downloadFile(url, filePath);
-				if (result == false){
-					log.severe("<doParseAddress> fail to download file for parsing address, file = "+filePath);
-					return null;
-				}
-				
-				file = new File(filePath);
-				if (!file.exists()){						
-					log.severe("<doParseAddress> download file OK but cannot read file, file = "+filePath);
-					return null;
-				}
-			}
+
+//			String fileDir = getAddressTempFilePath();
+//			String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
+//			File file = new File(filePath);
+//			if (!file.exists()){
+//				boolean result = HttpDownload.downloadFile(url, filePath);
+//				if (result == false){
+//					log.severe("<doParseAddress> fail to download file for parsing address, file = "+filePath);
+//					return null;
+//				}
+//				
+//				file = new File(filePath);
+//				if (!file.exists()){						
+//					log.severe("<doParseAddress> download file OK but cannot read file, file = "+filePath);
+//					return null;
+//				}
+//			}
 			
 			
 			
 			
-//			Connection connection = Jsoup.connect(url).timeout(20*1000);	
-			String htmlString = FileUtils.stringFromFile(file);			
-			Document doc = Jsoup.parse(htmlString);
+			Connection connection = Jsoup.connect(url).timeout(20*1000);	
+			Document doc = connection.get();
+//			String htmlString = FileUtils.stringFromFile(file);			
+//			Document doc = Jsoup.parse(htmlString);
 			if (doc != null) {
 				long parseStartTime = System.currentTimeMillis();
 				find_common_add(doc, url);

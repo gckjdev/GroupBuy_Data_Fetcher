@@ -73,7 +73,7 @@ public class ParserTest {
 		
 		GenericAddressParser addressParser = new GenericAddressParser();
 //		addressParser.setEncoding("GBK");
-		List<String> addressList = addressParser.doParseAddress("http://life.sina.com.cn/tuan/deal/1735");
+		List<String> addressList = addressParser.doParseAddress("http://life.sina.com.cn/tuan/deal/1300");
 //		String siteId = DBConstants.C_SITE_SINA;	
 //		CommonGroupBuyParser parser = new Hao123Parser();
 //		parser.setMongoClient(mongoClient);
