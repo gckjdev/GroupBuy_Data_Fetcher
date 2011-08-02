@@ -14,6 +14,11 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import org.jdom.Element;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.*;
+
+
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
@@ -424,14 +429,14 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	/**
-	 * ×Ö·û´®·Ö¸î
+	 * ï¿½Ö·ï¿½Ö¸ï¿½
 	 * @param expression
-	 *            ÕýÔò±í´ïÊ½×Ö·û´®
+	 *            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ö·ï¿½
 	 * @param text
-	 *            Òª½øÐÐ·Ö¸î²Ù×÷µÄ×Ö·û´®
+	 *            Òªï¿½ï¿½ï¿½Ð·Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½
 	 */
 	public static String[] splitText(String Expression, String text) {
-		Pattern p = Pattern.compile(Expression); // ÕýÔò±í´ïÊ½
+		Pattern p = Pattern.compile(Expression); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
 		String[] a = p.split(text);
 		return a;
 	}
@@ -455,6 +460,15 @@ public abstract class CommonGroupBuyParser {
 			}	
 		 } 
 		return id;
+	}
+	/**
+	 * 
+	 */
+	public String deleteXmlTag(String str) {
+		str = str.replaceAll("\"", "");
+		org.jsoup.nodes.Document doc = Jsoup.parse(str);
+		str = doc.text();
+    	return doc.text();
 	}
 	
 }
