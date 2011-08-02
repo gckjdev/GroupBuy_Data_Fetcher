@@ -49,11 +49,11 @@ public class MeituanAddressParser extends CommonAddressParser {
 		}
 	}
 	/**
-	 * µİ¹éµ÷ÓÃ
+	 * é€’å½’è°ƒç”¨
 	 */
 	private void meituan_recursion(String str){
 		int index;
-		if((index=str.indexOf("µØÖ·")) != -1){
+		if((index=str.indexOf("åœ°å€")) != -1){
 			String s1 = str.substring(index+3);
 			s1 = s1.trim();
 			String s2 = s1.substring(0, 50);
@@ -78,7 +78,7 @@ public class MeituanAddressParser extends CommonAddressParser {
 	 */
 	private static boolean isLeagle(String str){
 		boolean flag = false;
-		if(str.contains("Çø") || str.contains("Â·") || str.contains("")){
+		if(str.contains("åŒº") || str.contains("è·¯") || str.contains("")){
 			flag = true;
 		}
 		return flag;
@@ -88,8 +88,8 @@ public class MeituanAddressParser extends CommonAddressParser {
 	 */
 	private void addtoList(String str){
 		str = str.trim();
-		int index_phone = str.indexOf("µç»°");
-		int index_add = str.indexOf("µØÖ·");
+		int index_phone = str.indexOf("ç”µè¯");
+		int index_add = str.indexOf("åœ°å€");
 		int start = 0;
 		int end = str.length();
 		if(index_add != -1){

@@ -93,12 +93,12 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		if (city == null)
 			return null;
 		
-		if (city.equalsIgnoreCase("商品")){
-			return "全国";
+		if (city.equalsIgnoreCase("鍟嗗搧")){
+			return "鍏ㄥ浗";
 		}
 
 		if(city.contains(",")){
-			return "全国";
+			return "鍏ㄥ浗";
 		}
 		
 		return city;

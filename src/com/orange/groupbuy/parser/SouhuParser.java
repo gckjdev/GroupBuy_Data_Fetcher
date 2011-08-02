@@ -15,7 +15,7 @@ import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
 public class SouhuParser extends CommonGroupBuyParser {
-	final static String WEBSITE = "ËÑºü";
+	final static String WEBSITE = "æœç‹";
 	final static String SITEURL = "http://tuan.sohu.com/cn/all/list";
 	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser) {

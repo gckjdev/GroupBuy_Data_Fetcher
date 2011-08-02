@@ -119,19 +119,19 @@ public class LashouParser extends CommonGroupBuyParser {
 		if (category == null)
 			return DBConstants.C_CATEGORY_UNKNOWN;			
 		
-		if (category.equalsIgnoreCase("ÐÝÏÐ")){
+		if (category.equalsIgnoreCase("ä¼‘é—²")){
 			return DBConstants.C_CATEGORY_FUN;
 		}
-		else if (category.equalsIgnoreCase("ÃÀÊ³")){
+		else if (category.equalsIgnoreCase("ç¾Žé£Ÿ")){
 			return DBConstants.C_CATEGORY_EAT;
 		}
-		else if (category.equalsIgnoreCase("ÃÀÈÝ")){
+		else if (category.equalsIgnoreCase("ç¾Žå®¹")){
 			return DBConstants.C_CATEGORY_FACE;			
 		}
-		else if (category.equalsIgnoreCase("Íø¹º")){
+		else if (category.equalsIgnoreCase("ç½‘è´­")){
 			return DBConstants.C_CATEGORY_SHOPPING;			
 		}
-		else if (category.equalsIgnoreCase("ÆäËû")){
+		else if (category.equalsIgnoreCase("å…¶ä»–")){
 			return DBConstants.C_CATEGORY_UNKNOWN;			
 		}
 		

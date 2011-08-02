@@ -91,19 +91,19 @@ public class MeituanParser extends CommonGroupBuyParser {
 		if (category == null)
 			return DBConstants.C_CATEGORY_UNKNOWN;			
 		
-		if (category.equalsIgnoreCase("文体娱乐")){
+		if (category.equalsIgnoreCase("鏂囦綋濞变箰")){
 			return DBConstants.C_CATEGORY_FUN;
 		}
-		else if (category.equalsIgnoreCase("餐饮")){
+		else if (category.equalsIgnoreCase("椁愰ギ")){
 			return DBConstants.C_CATEGORY_EAT;
 		}
-		else if (category.equalsIgnoreCase("健康丽人")){
+		else if (category.equalsIgnoreCase("鍋ュ悍涓戒汉")){
 			return DBConstants.C_CATEGORY_FACE;			
 		}
-		else if (category.equalsIgnoreCase("生活服务")){
+		else if (category.equalsIgnoreCase("鐢熸椿鏈嶅姟")){
 			return DBConstants.C_CATEGORY_LIFE;			
 		}
-		else if (category.equalsIgnoreCase("实物")){
+		else if (category.equalsIgnoreCase("瀹炵墿")){
 			return DBConstants.C_CATEGORY_SHOPPING;			
 		}
 		
@@ -115,7 +115,7 @@ public class MeituanParser extends CommonGroupBuyParser {
 			return null;
 		
 		if(city.contains(",")){
-			return "全国";
+			return "鍏ㄥ浗";
 		}
 		
 		return city;
