@@ -29,6 +29,12 @@ public abstract class CommonGroupBuyParser {
 		FAIL				
 	};
 	
+	enum ADDRESS_COUNTER_TYPE {		
+		FROM_API,
+		FROM_HTML,		
+		FAIL
+	};
+	
 	public static final Logger log = Logger.getLogger(CommonGroupBuyParser.class
 			.getName());
 	
@@ -133,6 +139,26 @@ public abstract class CommonGroupBuyParser {
 			break;
 		case FAIL:
 			failCounter ++;
+			break;
+		}
+	}
+	
+	int totalAddressCounter;
+	int addressApiCounter;
+	int addressHtmlCounter;
+	int addressFailCounter;
+	
+	public void incAddressCounter(ADDRESS_COUNTER_TYPE counterType){
+		totalAddressCounter ++;
+		switch (counterType){
+		case FROM_API:
+			addressApiCounter ++;			
+			break;
+		case FROM_HTML:
+			addressHtmlCounter ++;
+			break;
+		case FAIL:
+			addressFailCounter ++;
 			break;
 		}
 	}
@@ -264,6 +290,11 @@ public abstract class CommonGroupBuyParser {
 					updateCounter+" update, "+
 					existCounter+" exist, "+
 					failCounter+" failed.");
+			log.info("address parse statistic, total "+totalAddressCounter+" parsed, "+
+					addressApiCounter+" from API, "+
+					addressHtmlCounter+" from HTML, "+
+					addressFailCounter+" failure/none");
+			
 			
 			return result;
 
@@ -327,8 +358,20 @@ public abstract class CommonGroupBuyParser {
 			
 			// read address if not given
 			if (addressList == null || addressList.size() == 0){
+				// no address, try fetch from HTML page
 				addressParser.setEncoding(getEncoding());
-				addressList = addressParser.parseAddress(loc);				
+				addressList = addressParser.parseAddress(loc);	
+				
+				if (addressList != null && addressList.size() > 0){
+					incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+				}
+				else{
+					incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+				}
+			}
+			else{
+				// already have address
+				incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_API);
 			}
 
 			// set address
