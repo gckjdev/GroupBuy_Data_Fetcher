@@ -12,6 +12,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.orange.common.utils.DateUtil;
+import com.orange.common.utils.FileUtils;
+import com.orange.common.utils.html.HtmlUtils;
 import com.orange.common.utils.http.HttpDownload;
 
 public class GenericAddressParser extends CommonAddressParser {
@@ -57,8 +59,12 @@ public class GenericAddressParser extends CommonAddressParser {
 				}
 			}
 			
-//				Connection connection = Jsoup.connect(url).timeout(20*1000);				
-			Document doc = Jsoup.parse(file, getEncoding());;
+			
+			
+			
+//			Connection connection = Jsoup.connect(url).timeout(20*1000);	
+			String htmlString = FileUtils.stringFromFile(file);			
+			Document doc = Jsoup.parse(htmlString);
 			if (doc != null) {
 				long parseStartTime = System.currentTimeMillis();
 				find_common_add(doc, url);
