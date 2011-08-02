@@ -44,6 +44,8 @@ public class GenericAddressParser extends CommonAddressParser {
 
 			String fileDir = getAddressTempFilePath();
 			String filePath = fileDir.concat(URLEncoder.encode(url, "UTF-8"));
+			//TODO
+//			System.out.println("<deubg> filePath = " + filePath);
 			File file = new File(filePath);
 			if (!file.exists()){
 				boolean result = HttpDownload.downloadFile(url, filePath);
@@ -91,11 +93,12 @@ public class GenericAddressParser extends CommonAddressParser {
 			Elements list = (Elements) doc.getElementsByTag("div");
 			for (Element element : list) {
 				String content = element.text();
+				//TODO remove
+//				System.out.println(content);
 				String[] strs = content.split("\\s");
 				if (strs == null)
 					return;
 				int len = strs.length;
-				// TODO
 				for (int i = 0; i < strs.length; i++) {
 					String str = strs[i];
 					int index = str.indexOf("地址：");
@@ -113,7 +116,7 @@ public class GenericAddressParser extends CommonAddressParser {
 				for (int i = 0; i < len; i++)
 					scores[i] = 0;
 				for (int i = 0; i < len; i++) {
-					if (strs[i].length() > 8 && strs[i].length() < 80) {
+					if (strs[i].length() > 5) {
 						scores[i] = addScore(strs[i]);
 					}
 				}
@@ -136,7 +139,7 @@ public class GenericAddressParser extends CommonAddressParser {
 				int i = 0;
 				// consider the score
 				for (i = 0; i < len; i++) {
-					if (scores[i] >= 3) {
+					if (scores[i] >= 2) {
 						addtoList(strs[i]);
 					}
 				}
@@ -270,6 +273,10 @@ public class GenericAddressParser extends CommonAddressParser {
 			str = str.substring(0, index);
 		}
 		index = str.indexOf("交通");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("乘车");
 		if (index != -1) {
 			str = str.substring(0, index);
 		}
