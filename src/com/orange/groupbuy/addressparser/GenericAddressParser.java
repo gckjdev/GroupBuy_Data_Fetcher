@@ -138,7 +138,7 @@ public class GenericAddressParser extends CommonAddressParser {
 				int i = 0;
 				// consider the score
 				for (i = 0; i < len; i++) {
-					if (scores[i] >= 3) {
+					if (scores[i] >= 2) {
 						addtoList(strs[i]);
 					}
 				}
