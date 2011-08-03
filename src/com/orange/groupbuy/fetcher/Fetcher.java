@@ -15,7 +15,7 @@ public class Fetcher extends CommonProcessor {
 	static final String MONGO_USER = "";
 	static final String MONGO_PASSWORD = "";
 	
-	protected MongoDBClient mongoClient = new MongoDBClient(MONGO_SERVER, DBConstants.D_GROUPBUY, MONGO_USER, MONGO_PASSWORD);
+	public static MongoDBClient mongoClient = new MongoDBClient(MONGO_SERVER, DBConstants.D_GROUPBUY, MONGO_USER, MONGO_PASSWORD);
 	
 	@Override
 	public MongoDBClient getMongoDBClient() {
@@ -50,12 +50,18 @@ public class Fetcher extends CommonProcessor {
 	
 	public static void main(String[] args){		
 				
-		Fetcher dataFetcher = new Fetcher();
-		Thread thread = new Thread(dataFetcher);
-		thread.start();
+		final int MAX_THREAD_NUM = 5;
 		
-		Timer readTaskTimer = new Timer();
-		readTaskTimer.schedule(new ReadTaskTimerTask(dataFetcher), 1000, 1000);
+		for (int i=0; i<MAX_THREAD_NUM; i++){
+			Fetcher dataFetcher = new Fetcher();
+			Thread thread = new Thread(dataFetcher);
+			thread.start();
+			
+			if (i == 0){
+				Timer readTaskTimer = new Timer();
+				readTaskTimer.schedule(new ReadTaskTimerTask(dataFetcher), 1000, 1000);
+			}
+		}
 	}
 
 }

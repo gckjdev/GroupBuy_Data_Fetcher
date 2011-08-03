@@ -40,8 +40,16 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);	
 		String localFilePath = (String)task.get(DBConstants.F_TASK_FILE_PATH);
 		
+		mainProcessor.severe(this, "execute task="+task.toString());
+		
+		if (siteId == null || url == null){
+			mainProcessor.severe(this, "siteId("+siteId+") or url("+url+") is null");
+			return;
+		}
+		
 		String dir = getPath();
-		String filename = siteId.concat("_").concat(String.valueOf(System.currentTimeMillis()));
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String filename = siteId.concat("_").concat(timeStamp);
 		
 		if (localFilePath == null || localFilePath.length() == 0){
 			localFilePath = dir.concat("/").concat(filename);
