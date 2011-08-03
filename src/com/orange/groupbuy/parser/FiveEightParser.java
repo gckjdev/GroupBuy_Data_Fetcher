@@ -5,9 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.DataFormatException;
 
 import org.jdom.Element;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
@@ -38,6 +42,7 @@ public class FiveEightParser extends CommonGroupBuyParser {
 				Element data = (Element) product_it.next();
 				String loc = getFieldValue(data, "url");
 				String title = getFieldValue(data, "name");
+				
 				String phone = getFieldValue(data, "vendor_phone");
 				double value = StringUtil.doubleFromString(getFieldValue(data, "market_price"));
 				double price = StringUtil.doubleFromString(getFieldValue(data, "group_price"));
@@ -47,7 +52,9 @@ public class FiveEightParser extends CommonGroupBuyParser {
 				String expiredTimeString = getFieldValue(data, "expired_date");
 				String image = getFieldValue(data, "image");
 				String description = getFieldValue(data, "introduction");
+				description = deleteXmlTag(description);
 				String detail = getFieldBlockString(data, "comment");
+				detail = deleteXmlTag(detail);
 				String website = WEBSITE;
 				List<String> range = StringUtil.stringToList(getFieldValue(data, "region"));
 				int major = DBConstants.C_NOT_MAJOR;
