@@ -79,6 +79,78 @@ public abstract class CommonGroupBuyParser {
 		return null;
 	}
 	
+	public int getInsertCounter() {
+		return insertCounter;
+	}
+
+	public void setInsertCounter(int insertCounter) {
+		this.insertCounter = insertCounter;
+	}
+
+	public int getUpdateCounter() {
+		return updateCounter;
+	}
+
+	public void setUpdateCounter(int updateCounter) {
+		this.updateCounter = updateCounter;
+	}
+
+	public int getFailCounter() {
+		return failCounter;
+	}
+
+	public void setFailCounter(int failCounter) {
+		this.failCounter = failCounter;
+	}
+
+	public int getExistCounter() {
+		return existCounter;
+	}
+
+	public void setExistCounter(int existCounter) {
+		this.existCounter = existCounter;
+	}
+
+	public int getTotalCounter() {
+		return totalCounter;
+	}
+
+	public void setTotalCounter(int totalCounter) {
+		this.totalCounter = totalCounter;
+	}
+
+	public int getTotalAddressCounter() {
+		return totalAddressCounter;
+	}
+
+	public void setTotalAddressCounter(int totalAddressCounter) {
+		this.totalAddressCounter = totalAddressCounter;
+	}
+
+	public int getAddressApiCounter() {
+		return addressApiCounter;
+	}
+
+	public void setAddressApiCounter(int addressApiCounter) {
+		this.addressApiCounter = addressApiCounter;
+	}
+
+	public int getAddressHtmlCounter() {
+		return addressHtmlCounter;
+	}
+
+	public void setAddressHtmlCounter(int addressHtmlCounter) {
+		this.addressHtmlCounter = addressHtmlCounter;
+	}
+
+	public int getAddressFailCounter() {
+		return addressFailCounter;
+	}
+
+	public void setAddressFailCounter(int addressFailCounter) {
+		this.addressFailCounter = addressFailCounter;
+	}
+
 	public static CommonGroupBuyParser getParser(String siteId) {
 		
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_DIANPIAN))
@@ -299,7 +371,6 @@ public abstract class CommonGroupBuyParser {
 					addressApiCounter+" from API, "+
 					addressHtmlCounter+" from HTML, "+
 					addressFailCounter+" failure/none");
-			
 			
 			return result;
 

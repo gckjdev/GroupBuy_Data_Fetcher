@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.UUID;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.common.processor.BasicProcessorRequest;
@@ -74,11 +75,32 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		result = parser.parse(localFilePath);
 		if (!result){
 			mainProcessor.warning(this, "Fail to parse file "+localFilePath);
+			setTaskStatistic(task, parser);
+			FetchTaskManager.taskFailure(mongoClient, task);
 			return;
 		}
-		
+				
 		// update task status to finish
+		setTaskStatistic(task, parser);
 		FetchTaskManager.taskClose(mongoClient, task);
+	}
+	
+	private void setTaskStatistic(DBObject task, CommonGroupBuyParser parser){
+		DBObject stat = new BasicDBObject();
+		
+		stat.put(DBConstants.F_COUNTER_ADDRESS_TOTAL, parser.getTotalAddressCounter());
+		stat.put(DBConstants.F_COUNTER_ADDRESS_API, parser.getAddressApiCounter());
+		stat.put(DBConstants.F_COUNTER_ADDRESS_FAIL, parser.getAddressFailCounter());
+		stat.put(DBConstants.F_COUNTER_ADDRESS_HTML, parser.getAddressHtmlCounter());
+
+		stat.put(DBConstants.F_COUNTER_TOTAL, parser.getTotalCounter());
+		stat.put(DBConstants.F_COUNTER_INSERT, parser.getInsertCounter());
+		stat.put(DBConstants.F_COUNTER_UPDATE, parser.getUpdateCounter());
+		stat.put(DBConstants.F_COUNTER_EXIST, parser.getExistCounter());
+		stat.put(DBConstants.F_COUNTER_FAIL, parser.getFailCounter());
+		
+		task.put(DBConstants.F_STAT, stat);
+
 	}
 
 	public void setTask(DBObject task) {
