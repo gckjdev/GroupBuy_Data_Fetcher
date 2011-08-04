@@ -41,6 +41,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			
 			String website = getFieldValue(data, "website");
 			String siteurl = getFieldValue(data, "siteurl");
+			if (siteurl == null){
+				siteurl = getDefaultSiteURL();
+			}
+			
 			String city = convertCity(getFieldValue(data, "city"));
 			//more consideration
 			String title = getFieldValue(data, "title");
@@ -105,6 +109,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 	}
 
 	public String generateWapLoc(String loc, String imageURL) {
+		return null;
+	}
+	
+	public String getDefaultSiteURL(){
 		return null;
 	}
 	
