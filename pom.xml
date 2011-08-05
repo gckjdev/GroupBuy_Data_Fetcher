@@ -24,10 +24,8 @@
 		<org.springframework.version>3.0.5.RELEASE
 		</org.springframework.version>
 		<org.apache.mahout.version>0.4</org.apache.mahout.version>
-		<jettyVersion>7.3.0.v20110203</jettyVersion>
-		
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+		<jettyVersion>7.3.0.v20110203</jettyVersion>		
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>		
 	</properties>
 	<dependencies>
 		<!-- internal project -->
@@ -221,35 +219,33 @@
 			<version>1.2.16</version>
 		</dependency>
 	</dependencies>
-	<build>
-
-	<plugins>
 	
-<plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <configuration>
-        <appendAssemblyId>false</appendAssemblyId>
-        <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-        <archive>
-            <manifest>
-                <mainClass>com.orange.groupbuy.fetcher.Fetcher</mainClass>
-            </manifest>
-        </archive>
-    </configuration>
-    <executions>
-        <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-                <goal>assembly</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
-
-</plugins>	
+	<build>
+		<plugins>	
+			<plugin>
+			    <artifactId>maven-assembly-plugin</artifactId>
+			    <configuration>
+			        <appendAssemblyId>false</appendAssemblyId>
+			        <descriptorRefs>
+			            <descriptorRef>jar-with-dependencies</descriptorRef>
+			        </descriptorRefs>
+			        <archive>
+			            <manifest>
+			                <mainClass>com.orange.groupbuy.fetcher.Fetcher</mainClass>
+			            </manifest>
+			        </archive>
+			    </configuration>
+			    <executions>
+			        <execution>
+			            <id>make-assembly</id>
+			            <phase>package</phase>
+			            <goals>
+			                <goal>assembly</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			</plugin>			
+		</plugins>	
 	
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
@@ -270,5 +266,6 @@
 				</excludes>
 			</testResource>
 		</testResources>
+		
 	</build>
 </project>
