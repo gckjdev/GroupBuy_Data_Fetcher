@@ -50,7 +50,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		
 		String dir = getPath();
 		String timeStamp = String.valueOf(System.currentTimeMillis());
-		String filename = siteId.concat("_").concat(timeStamp);
+		String filename = siteId.concat("_").concat(timeStamp).concat(".xml");
 		
 		if (localFilePath == null || localFilePath.length() == 0){
 			localFilePath = dir.concat("/").concat(filename);
