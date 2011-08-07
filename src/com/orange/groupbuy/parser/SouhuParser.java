@@ -87,7 +87,13 @@ public class SouhuParser extends Tuan800Parser {
 		}
 		return date;
 	}
-
+	
+	@Override
+	public String convertCity(String city){
+		return "全国";
+	}
+	
+	
 	@Override
 	public boolean disableAddressParsing() {
 		return true;
