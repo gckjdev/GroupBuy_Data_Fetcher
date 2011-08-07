@@ -619,7 +619,7 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	public String convertCity(String city){
-		return city;
+		return "全国";
 	}
 	
 	public abstract boolean disableAddressParsing();

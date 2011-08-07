@@ -46,12 +46,14 @@ public class NuomiParser extends Tuan800Parser {
 		}
 		if(cityCode.isEmpty())
 			return null;
-		
-		id = getIDFromWeb("V_H/", ".jpg", imageURL);
+		// TODO
+		id = getIDFromWeb("V_[a-zA-Z]{1}/", ".jpg", imageURL);
+		if(id == null)
+			return null;
 		int index = id.indexOf("-");
-		if(index != -1){
-			id = id.substring(0, index);
-		}
+		if(index == -1)
+			return null;
+		id = id.substring(0, index);
 		wapURL = "http://m.nuomi.com/?areaId=".concat(cityCode).concat("&id=").concat(id);
 		return wapURL;
 	}
