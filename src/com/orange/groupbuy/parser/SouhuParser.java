@@ -14,56 +14,56 @@ import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
-public class SouhuParser extends CommonGroupBuyParser {
+public class SouhuParser extends Tuan800Parser {
 	final static String WEBSITE = "搜狐";
 	final static String SITEURL = "http://tuan.sohu.com/cn/all/list";
-	@Override
-	public boolean parseElement(Element root, CommonAddressParser addressParser) {
-		List<?> productList = getFieldBlock(root, "deals", "deal");
-		if (productList == null)
-			return false;
-
-		Iterator<?> it = productList.iterator();
-		while (it.hasNext()) {
-			Element deal = (Element) it.next();
-			if (deal == null)
-				continue;
-			String website = WEBSITE;
-			String city = getFieldValue(deal, "city_name");
-			String siteurl = SITEURL;
-			String title = getFieldValue(deal, "title");
-			String loc = getFieldValue(deal, "deal_url");
-			String image = getFieldValue(deal, "image_url");
-			int category = convertCategory(getFieldValue(deal, "deal_cate"));
-			double value = StringUtil.doubleFromString(getFieldValue(deal, "value"));
-			double price = StringUtil.doubleFromString(getFieldValue(deal, "price"));
-			int bought = StringUtil.intFromString(getFieldValue(deal, "quantity_sold"));
-			String startTimeString = getFieldValue(deal, "start_date");
-			String endTimeString = getFieldValue(deal, "start_date");
-			int major = 0;
-			String detail = getFieldValue(deal, "deal_tips");
-			Element conditionElement = getFieldElement(deal, "condition");
-			String maxPruchase = getFieldBlockString(conditionElement, "maximum_purchase");
-			String expirationTimeString = getFieldBlockString(conditionElement, "expiration_date");
-			
-			Date startDate = stringToDate(startTimeString);
-			Date endDate = stringToDate(endTimeString);
-			Date expirationDate = stringToDate(expirationTimeString);
-		
-			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
-					price, value, bought, siteId, website, siteurl, major, null, addressParser);
-			
-			if (product != null){							
-				// save extra fields
-				product.setDetail(detail);
-				product.setRange(null);
-				product.setCategory(category);
-				ProductManager.save(mongoClient, product);
-			}		
-		}
-		
-		return false;
-	}
+//	@Override
+//	public boolean parseElement(Element root, CommonAddressParser addressParser) {
+//		List<?> productList = getFieldBlock(root, "deals", "deal");
+//		if (productList == null)
+//			return false;
+//
+//		Iterator<?> it = productList.iterator();
+//		while (it.hasNext()) {
+//			Element deal = (Element) it.next();
+//			if (deal == null)
+//				continue;
+//			String website = WEBSITE;
+//			String city = getFieldValue(deal, "city_name");
+//			String siteurl = SITEURL;
+//			String title = getFieldValue(deal, "title");
+//			String loc = getFieldValue(deal, "deal_url");
+//			String image = getFieldValue(deal, "image_url");
+//			int category = convertCategory(getFieldValue(deal, "deal_cate"));
+//			double value = StringUtil.doubleFromString(getFieldValue(deal, "value"));
+//			double price = StringUtil.doubleFromString(getFieldValue(deal, "price"));
+//			int bought = StringUtil.intFromString(getFieldValue(deal, "quantity_sold"));
+//			String startTimeString = getFieldValue(deal, "start_date");
+//			String endTimeString = getFieldValue(deal, "start_date");
+//			int major = 0;
+//			String detail = getFieldValue(deal, "deal_tips");
+//			Element conditionElement = getFieldElement(deal, "condition");
+//			String maxPruchase = getFieldBlockString(conditionElement, "maximum_purchase");
+//			String expirationTimeString = getFieldBlockString(conditionElement, "expiration_date");
+//			
+//			Date startDate = stringToDate(startTimeString);
+//			Date endDate = stringToDate(endTimeString);
+//			Date expirationDate = stringToDate(expirationTimeString);
+//		
+//			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
+//					price, value, bought, siteId, website, siteurl, major, null, addressParser, null);
+//			
+//			if (product != null){							
+//				// save extra fields
+//				product.setDetail(detail);
+//				product.setRange(null);
+//				product.setCategory(category);
+//				ProductManager.save(mongoClient, product);
+//			}		
+//		}
+//		
+//		return false;
+//	}
 
 	@Override
 	public int convertCategory(String category) {
@@ -86,6 +86,11 @@ public class SouhuParser extends CommonGroupBuyParser {
 			e.printStackTrace();
 		}
 		return date;
+	}
+
+	@Override
+	public boolean disableAddressParsing() {
+		return true;
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.orange.groupbuy.parser;
 
-public class DidaParser extends Hao123Parser {
+public class DidaParser extends Tuan800Parser {
 
 	@Override
 	public String generateWapLoc(String loc, String imageURL) {

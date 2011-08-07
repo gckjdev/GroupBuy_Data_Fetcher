@@ -37,7 +37,8 @@ public abstract class CommonGroupBuyParser {
 	enum ADDRESS_COUNTER_TYPE {		
 		FROM_API,
 		FROM_HTML,		
-		FAIL
+		FAIL,
+		SKIP
 	};
 	
 	public static final Logger log = Logger.getLogger(CommonGroupBuyParser.class
@@ -149,6 +150,14 @@ public abstract class CommonGroupBuyParser {
 
 	public void setAddressFailCounter(int addressFailCounter) {
 		this.addressFailCounter = addressFailCounter;
+	}	
+	
+	public int getAddressSkipCounter() {
+		return addressSkipCounter;
+	}
+
+	public void setAddressSkipCounter(int addressSkipCounter) {
+		this.addressSkipCounter = addressSkipCounter;
 	}
 
 	public static CommonGroupBuyParser getParser(String siteId) {
@@ -180,6 +189,45 @@ public abstract class CommonGroupBuyParser {
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_NUOMI))
 			return new NuomiParser();
 		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_24QUAN))
+			return new TwoFourQuanParser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_JUMEIYOUPIN))
+			return new JuMeiParser();
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_JINGDONG))
+			return new Tuan800Parser();		
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_MANZUO))
+			return new Tuan800Parser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_TUANBAO))
+			return new Tuan800Parser();
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_KAIXIN))
+			return new Tuan800Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_JUQI))
+			return new Tuan800Parser();		
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_FANTONG))
+			return new Tuan800Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_GANJI))
+			return new Hao123Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_QUNAER))
+			return new Hao123Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_LETAO))
+			return new Tuan800Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_ZTUAN))
+			return new Tuan800Parser();		
+
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_FENTUAN))
+			return new Hao123Parser();		
+
 		return new Hao123Parser();			
 	}
 	
@@ -224,6 +272,7 @@ public abstract class CommonGroupBuyParser {
 	int addressApiCounter;
 	int addressHtmlCounter;
 	int addressFailCounter;
+	int addressSkipCounter;
 	
 	public void incAddressCounter(ADDRESS_COUNTER_TYPE counterType){
 		totalAddressCounter ++;
@@ -236,6 +285,8 @@ public abstract class CommonGroupBuyParser {
 			break;
 		case FAIL:
 			addressFailCounter ++;
+		case SKIP:
+			addressSkipCounter ++;
 			break;
 		}
 	}
@@ -370,6 +421,7 @@ public abstract class CommonGroupBuyParser {
 			log.info("address parse statistic, total "+totalAddressCounter+" parsed, "+
 					addressApiCounter+" from API, "+
 					addressHtmlCounter+" from HTML, "+
+					addressSkipCounter+" skip, "+
 					addressFailCounter+" failure/none");
 			
 			return result;
@@ -403,7 +455,7 @@ public abstract class CommonGroupBuyParser {
 	
 	public Product saveProduct(MongoDBClient mongoClient, String city, String loc, String image, String title, Date startDate, Date endDate, 
 			double price, double value, int bought, String siteId, String siteName, String siteURL,
-			int major, List<String> addressList, CommonAddressParser addressParser){
+			int major, List<String> addressList, CommonAddressParser addressParser, List<List<Double>> gpsList){
 		
 		// check if product exist
 		Product product;
@@ -422,16 +474,22 @@ public abstract class CommonGroupBuyParser {
 			List<String> list = product.getAddress();
 			if (list == null || list.size() == 0){
 
-				// try fetch from HTML page
-				addressList = addressParser.parseAddress(loc);					
-				if (addressList != null && addressList.size() > 0){
-					product.setAddress(addressList);
-					updateFlag = true;					
-					incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+				// TODO refactor the code
+				if (disableAddressParsing()){
+					incAddressCounter(ADDRESS_COUNTER_TYPE.SKIP);
 				}
-				else{
-					log.warning("fail to get address for product="+product.toString());
-					incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+				else{					
+					// try fetch from HTML page
+					addressList = addressParser.parseAddress(loc);					
+					if (addressList != null && addressList.size() > 0){
+						product.setAddress(addressList);
+						updateFlag = true;					
+						incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+					}
+					else{
+						log.warning("fail to get address for product="+product.toString());
+						incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+					}
 				}
 			}			
 			
@@ -453,19 +511,26 @@ public abstract class CommonGroupBuyParser {
 		if (product.setMandantoryFields(city, loc, image, title, startDate, endDate, 
 				price, value, bought, siteId, siteName, siteURL)){
 			
-			product.setMajor(major);			
+			product.setMajor(major);	
+			product.setGPS(gpsList);
 			
 			// read address if not given
 			if (addressList == null || addressList.size() == 0){
-				// no address, try fetch from HTML page
-				addressParser.setEncoding(getEncoding());
-				addressList = addressParser.parseAddress(loc);	
 				
-				if (addressList != null && addressList.size() > 0){
-					incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+				if (disableAddressParsing()){
+					incAddressCounter(ADDRESS_COUNTER_TYPE.SKIP);
 				}
 				else{
-					incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+					// no address, try fetch from HTML page
+					addressParser.setEncoding(getEncoding());
+					addressList = addressParser.parseAddress(loc);	
+					
+					if (addressList != null && addressList.size() > 0){
+						incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
+					}
+					else{
+						incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
+					}
 				}
 			}
 			else{
@@ -536,10 +601,25 @@ public abstract class CommonGroupBuyParser {
 	 * 
 	 */
 	public String deleteXmlTag(String str) {
-		str = str.replaceAll("\"", "");
+		if (str == null || str.isEmpty())
+			return str;
+		//str = str.replaceAll("\"", "");
 		org.jsoup.nodes.Document doc = Jsoup.parse(str);
+		if (doc == null)
+			return null;
+		
 		str = doc.text();
     	return doc.text();
+	}
+	
+	public String convertCity(String city){
+		return city;
+	}
+	
+	public abstract boolean disableAddressParsing();
+
+	private String getDefaultSiteURL() {
+		return null;
 	}
 	
 }

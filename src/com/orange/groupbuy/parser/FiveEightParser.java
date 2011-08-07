@@ -19,7 +19,7 @@ import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
-public class FiveEightParser extends Hao123Parser {
+public class FiveEightParser extends Tuan800Parser {
 	final static String WEBSITE = "58";
 	final static String SITEURL = "t.58.com";
 
@@ -112,8 +112,7 @@ public class FiveEightParser extends Hao123Parser {
 		return null;
 	}
 
-	@Override
-	public String getDefaultSiteURL(){
+	private String getDefaultSiteURL(){
 		return "http://t.58.com";
 	}
 

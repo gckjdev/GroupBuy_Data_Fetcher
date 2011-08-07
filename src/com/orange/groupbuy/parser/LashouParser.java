@@ -76,10 +76,10 @@ public class LashouParser extends Hao123Parser {
 //					if (shopAddress != null && shopAddress.length() > 0)
 //						address.add(shopAddress);
 //					
-//					if (shopTel != null & shopTel.length() > 0)
+//					if (shopTel != null && shopTel.length() > 0)
 //						telList.add(shopTel);
 //					
-//					if (shopName != null & shopName.length() > 0)
+//					if (shopName != null && shopName.length() > 0)
 //						shopNameList.add(shopName);
 //
 //					if (longitude != null && longitude.length() > 0 &&

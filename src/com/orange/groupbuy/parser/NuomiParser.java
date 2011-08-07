@@ -1,11 +1,11 @@
 package com.orange.groupbuy.parser;
 
-public class NuomiParser extends Hao123Parser {
+public class NuomiParser extends Tuan800Parser {
 	@Override
 	public String generateWapLoc(String loc, String imageURL) {
 		//loc: http://www.nuomi.com/beijing/jbmg.html
 		//wap: http://m.nuomi.com/?areaId=100010000&id=7530
-		//imageURL:¡¡http://nuomi.xnimg.cn/upload/deal/2011/07/V_H/8232-2.jpg
+		//imageURL:ï¿½ï¿½http://nuomi.xnimg.cn/upload/deal/2011/07/V_H/8232-2.jpg
 		String str = getIDFromWeb("com/", ".html", loc);
 		String strs[] = str.split("/");
 		String city = strs[0];

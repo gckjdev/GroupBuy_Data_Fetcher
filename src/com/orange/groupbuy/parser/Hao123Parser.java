@@ -65,7 +65,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
 			
 			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
-					price, value, bought, siteId, website, siteurl, major, address, addressParser);
+					price, value, bought, siteId, website, siteurl, major, address, addressParser, null);
 			
 			if (product != null){							
 				// save extra fields
@@ -93,7 +93,8 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		return StringUtil.intFromString(category);
 	}
 
-	private String convertCity(String city){
+	@Override
+	public String convertCity(String city){
 		if (city == null)
 			return null;
 		
@@ -114,6 +115,11 @@ public class Hao123Parser extends CommonGroupBuyParser {
 	
 	public String getDefaultSiteURL(){
 		return null;
+	}
+
+	@Override
+	public boolean disableAddressParsing() {
+		return false;
 	}
 	
 

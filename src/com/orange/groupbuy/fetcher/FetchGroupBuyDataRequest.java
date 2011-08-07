@@ -50,7 +50,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		
 		String dir = getPath();
 		String timeStamp = String.valueOf(System.currentTimeMillis());
-		String filename = siteId.concat("_").concat(timeStamp);
+		String filename = siteId.concat("_").concat(timeStamp).concat(".xml");
 		
 		if (localFilePath == null || localFilePath.length() == 0){
 			localFilePath = dir.concat("/").concat(filename);
@@ -92,6 +92,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		stat.put(DBConstants.F_COUNTER_ADDRESS_API, parser.getAddressApiCounter());
 		stat.put(DBConstants.F_COUNTER_ADDRESS_FAIL, parser.getAddressFailCounter());
 		stat.put(DBConstants.F_COUNTER_ADDRESS_HTML, parser.getAddressHtmlCounter());
+		stat.put(DBConstants.F_COUNTER_ADDRESS_SKIP, parser.getAddressSkipCounter());
 
 		stat.put(DBConstants.F_COUNTER_TOTAL, parser.getTotalCounter());
 		stat.put(DBConstants.F_COUNTER_INSERT, parser.getInsertCounter());
