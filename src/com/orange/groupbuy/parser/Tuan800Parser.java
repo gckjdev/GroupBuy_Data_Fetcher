@@ -147,7 +147,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				product.setGPS(gpsList);
 
 				ProductManager.save(mongoClient, product);
-				log.info("save final product="+product.toString());
+//				log.info("save final product="+product.toString());
 			}					
 			
 		}		

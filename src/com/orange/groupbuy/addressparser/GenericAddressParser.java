@@ -169,22 +169,21 @@ public class GenericAddressParser extends CommonAddressParser {
 		str = delString(str);
 
 		// TODO remove
-		System.out.println("<debug> parse str result=" + str);
+//		System.out.println("<debug> parse str result=" + str);
 
 		if (str.length() > 5 && str.length() < 50) {
 			if (str.contains("。") || str.contains("，") || (addScore(str) < 2)) {
 				System.out.println("<debug> have the illegal code= " + str);
 			} else if (addList.indexOf(str) == -1) {
 				addList.add(str);
-				// TODO remove
-				System.out.println("<debug> final result=" + str);
+//				System.out.println("<debug> final result=" + str);
 			} else {
-				System.out.println("<debug> have the same address!");
+//				System.out.println("<debug> have the same address!");
 			}
 			return true;
 		} else {
-			System.out.println("<debug> parse str, address length "
-					+ str.length() + " too short or too long, skip");
+//			System.out.println("<debug> parse str, address length "
+//					+ str.length() + " too short or too long, skip");
 			return false;
 		}
 	}

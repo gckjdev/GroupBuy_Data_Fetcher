@@ -449,7 +449,7 @@ public abstract class CommonGroupBuyParser {
 						incAddressCounter(ADDRESS_COUNTER_TYPE.FROM_HTML);					
 					}
 					else{
-						log.warning("fail to get address for product="+product.toString());
+//						log.warning("fail to get address for product="+product.toString());
 						incAddressCounter(ADDRESS_COUNTER_TYPE.FAIL);									
 					}
 				}
@@ -457,11 +457,11 @@ public abstract class CommonGroupBuyParser {
 			
 			if (updateFlag){
 				incCounter(COUNTER_TYPE.UPDATE);
-				log.info("update existing product, product = "+product.toString());
+//				log.info("update existing product, product = "+product.toString());
 				ProductManager.save(mongoClient, product);
 			}
 			else{
-				log.info("product exist, no need to update, product id="+product.getObjectId());
+//				log.info("product exist, no need to update, product id="+product.getObjectId());
 				incCounter(COUNTER_TYPE.EXIST);
 			}
 
@@ -505,18 +505,18 @@ public abstract class CommonGroupBuyParser {
 			}
 			
 			if (ProductManager.createProduct(mongoClient, product)){		
-				log.info("create new product success, product = "+product.toString());
+//				log.info("create new product success, product = "+product.toString());
 				incCounter(COUNTER_TYPE.INSERT);											
 				return product;
 			}
 			else{
-				log.info("create new product failure, product = "+product.toString());
+				log.severe("create new product failure, product = "+product.toString());
 				incCounter(COUNTER_TYPE.FAIL);
 				return null;
 			}
 		}
 		else{			
-			log.info("fail to set product mandantory fields, loc="+loc+",city="+city+
+			log.severe("fail to set product mandantory fields, loc="+loc+",city="+city+
 					",image="+image+",title="+title+",startDate="+startDate+",endDate="+endDate+
 					",price="+price+",value="+value+",bought="+bought+
 					",siteId="+siteId+",siteName="+siteName+",siteURL="+siteURL);
