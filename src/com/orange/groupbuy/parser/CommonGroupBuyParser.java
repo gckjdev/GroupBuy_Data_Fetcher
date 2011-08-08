@@ -205,13 +205,13 @@ public abstract class CommonGroupBuyParser {
 			return new Hao123Parser();
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_KAIXIN))
-			return new Tuan800Parser();		
+			return new Hao123Parser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_JUQI))
 			return new Tuan800Parser();		
 		
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_FANTONG))
-			return new Tuan800Parser();		
+			return new Hao123Parser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_GANJI))
 			return new Hao123Parser();		
@@ -220,13 +220,13 @@ public abstract class CommonGroupBuyParser {
 			return new Hao123Parser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_LETAO))
-			return new Tuan800Parser();		
+			return new LeTaoParser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_ZTUAN))
 			return new Tuan800Parser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_FENTUAN))
-			return new Hao123Parser();		
+			return new FenTuanParser();		
 
 		return new Hao123Parser();			
 	}
@@ -453,6 +453,12 @@ public abstract class CommonGroupBuyParser {
 		this.siteId = siteId;
 	}
 	
+	private boolean isForAllCity(String city){
+		if (city == null)
+			return false;
+		return (city.equals("全国"));
+	}
+	
 	public Product saveProduct(MongoDBClient mongoClient, String city, String loc, String image, String title, Date startDate, Date endDate, 
 			double price, double value, int bought, String siteId, String siteName, String siteURL,
 			int major, List<String> addressList, CommonAddressParser addressParser, List<List<Double>> gpsList){
@@ -475,7 +481,7 @@ public abstract class CommonGroupBuyParser {
 			if (list == null || list.size() == 0){
 
 				// TODO refactor the code
-				if (disableAddressParsing()){
+				if (disableAddressParsing() || isForAllCity(city)){
 					incAddressCounter(ADDRESS_COUNTER_TYPE.SKIP);
 				}
 				else{					
@@ -517,7 +523,7 @@ public abstract class CommonGroupBuyParser {
 			// read address if not given
 			if (addressList == null || addressList.size() == 0){
 				
-				if (disableAddressParsing()){
+				if (disableAddressParsing() || isForAllCity(city)){
 					incAddressCounter(ADDRESS_COUNTER_TYPE.SKIP);
 				}
 				else{

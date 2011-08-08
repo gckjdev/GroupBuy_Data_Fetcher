@@ -9,6 +9,7 @@ import org.jdom.Element;
 
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
+import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Gps;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
@@ -17,7 +18,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 
 	@Override
 	public int convertCategory(String category) {
-		return 0;
+		return DBConstants.C_CATEGORY_UNKNOWN;
 	}
 
 	@Override
