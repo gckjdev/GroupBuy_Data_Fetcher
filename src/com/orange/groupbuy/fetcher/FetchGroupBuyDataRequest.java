@@ -20,7 +20,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 	public static String DEFAULT_FILE_PATH = "./data";	
 	DBObject task;
 	
-	public synchronized static String getPath(){
+	private synchronized static String getPath(){
 		String dateDir = DateUtil.dateToStringByFormat(new Date(), "yyyyMMdd");
 		String fileDirPath = DEFAULT_FILE_PATH + "/" + dateDir; 
 		File dir = new File(fileDirPath);
@@ -29,6 +29,13 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		}		
 
 		return fileDirPath;
+	}
+	
+	private static String getTempFileName(String siteId){
+		String dir = getPath();
+		String timeStamp = String.valueOf(System.currentTimeMillis());
+		String filename = siteId.concat("_").concat(timeStamp).concat(".xml");
+		return dir.concat("/").concat(filename);
 	}
 	
 	@Override
@@ -41,19 +48,15 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);	
 		String localFilePath = (String)task.get(DBConstants.F_TASK_FILE_PATH);
 		
-		mainProcessor.severe(this, "execute task="+task.toString());
+		mainProcessor.info(this, "execute task="+task.toString());
 		
 		if (siteId == null || url == null){
 			mainProcessor.severe(this, "siteId("+siteId+") or url("+url+") is null");
 			return;
 		}
-		
-		String dir = getPath();
-		String timeStamp = String.valueOf(System.currentTimeMillis());
-		String filename = siteId.concat("_").concat(timeStamp).concat(".xml");
-		
+				
 		if (localFilePath == null || localFilePath.length() == 0){
-			localFilePath = dir.concat("/").concat(filename);
+			localFilePath = getTempFileName(siteId);
 			mainProcessor.info(this, "Download file from "+url+", save to "+localFilePath);
 			result = HttpDownload.downloadFile(url, localFilePath);
 			if (!result){
@@ -66,26 +69,24 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		// update task status to save OK
 		FetchTaskManager.taskDownloadFileSuccess(mongoClient, task, localFilePath);
 		
-		// get parser for parsing data
-		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId);
-		parser.setMongoClient(mongoClient);
-		parser.setSiteId(siteId);
-		
-		// start parsing data file and save data to DB
+		// get parser and start parsing data
+		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
 		result = parser.parse(localFilePath);
+		
 		if (!result){
+			// update task status to failure
 			mainProcessor.warning(this, "Fail to parse file "+localFilePath);
-			setTaskStatistic(task, parser);
+			setTaskStatisticData(task, parser);
 			FetchTaskManager.taskFailure(mongoClient, task);
 			return;
 		}
 				
 		// update task status to finish
-		setTaskStatistic(task, parser);
+		setTaskStatisticData(task, parser);
 		FetchTaskManager.taskClose(mongoClient, task);
 	}
 	
-	private void setTaskStatistic(DBObject task, CommonGroupBuyParser parser){
+	private void setTaskStatisticData(DBObject task, CommonGroupBuyParser parser){
 		DBObject stat = new BasicDBObject();
 		
 		stat.put(DBConstants.F_COUNTER_ADDRESS_TOTAL, parser.getTotalAddressCounter());

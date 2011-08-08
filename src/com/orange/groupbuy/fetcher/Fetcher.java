@@ -31,6 +31,7 @@ public class Fetcher extends CommonProcessor {
 		putRequest(request);
 	}
 
+	// read task from DB
 	static class ReadTaskTimerTask extends java.util.TimerTask{
 		
 		Fetcher dataFetcher;
@@ -51,6 +52,7 @@ public class Fetcher extends CommonProcessor {
         }
     }
 	
+	// reset and activate all task in DB 
 	static class ResetTaskTimer extends java.util.TimerTask{
 		
 		Fetcher dataFetcher;
@@ -98,15 +100,19 @@ public class Fetcher extends CommonProcessor {
 	public static void main(String[] args){		
 				
 		final int MAX_THREAD_NUM = 5;
+		final int READ_TASK_INTERVAL = 1000;		// 1 second
 		
 		for (int i=0; i<MAX_THREAD_NUM; i++){
+			
 			Fetcher dataFetcher = new Fetcher();
 			Thread thread = new Thread(dataFetcher);
 			thread.start();
 			
+			// use the first dataFetcher for timer initlization
 			if (i == 0){
+				
 				Timer readTaskTimer = new Timer();
-				readTaskTimer.schedule(new ReadTaskTimerTask(dataFetcher), 1000, 1000);
+				readTaskTimer.schedule(new ReadTaskTimerTask(dataFetcher), READ_TASK_INTERVAL, READ_TASK_INTERVAL);
 
 				Timer resetTaskTimer = new Timer();
 				resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());

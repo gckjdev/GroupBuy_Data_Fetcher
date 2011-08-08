@@ -42,43 +42,7 @@ public abstract class CommonGroupBuyParser {
 	};
 	
 	public static final Logger log = Logger.getLogger(CommonGroupBuyParser.class
-			.getName());
-	
-	final static int PARSER_HAO123 = 1;
-	final static int PARSER_MEITUAN = 2;
-	final static int PARSER_LASHOU = 3;
-	final static int PARSER_WOWO = 4;
-	final static int PARSER_58 = 5;
-	final static int PARSER_DIANPING = 6;
-	final static int PARSER_DIDA = 7;
-	final static int PARSER_HAOTEHUI = 8;
-	final static int PARSER_TUANHAO = 9;
-	final static int PARSER_XING800 = 10;
-	
-	@Deprecated
-	public static CommonGroupBuyParser getParser(int parserType) {
-		
-		switch (parserType){
-			case PARSER_HAO123:
-				return new Hao123Parser();
-			case PARSER_MEITUAN:
-				return new MeituanParser();
-			case PARSER_LASHOU:
-				return new LashouParser();
-			case PARSER_58:
-				return new FiveEightParser();
-			case PARSER_DIANPING:
-				return new DianpingParser();
-			case PARSER_DIDA:
-				return new DidaParser();
-			case PARSER_HAOTEHUI:
-				return new HaotehuiParser();
-			case PARSER_TUANHAO:
-				return new TuanhaoParser();
-		}
-		
-		return null;
-	}
+			.getName());		
 	
 	public int getInsertCounter() {
 		return insertCounter;
@@ -159,6 +123,16 @@ public abstract class CommonGroupBuyParser {
 	public void setAddressSkipCounter(int addressSkipCounter) {
 		this.addressSkipCounter = addressSkipCounter;
 	}
+	
+	public static CommonGroupBuyParser getParser(String siteId, MongoDBClient mongoClient){
+		CommonGroupBuyParser parser = getParser(siteId);
+		if (parser != null){
+			parser.setMongoClient(mongoClient);
+			parser.setSiteId(siteId);
+		}
+		
+		return parser;
+	}
 
 	public static CommonGroupBuyParser getParser(String siteId) {
 		
@@ -231,25 +205,32 @@ public abstract class CommonGroupBuyParser {
 		return new Hao123Parser();			
 	}
 	
-	String encoding = "UTF-8";
-	
-	
-	public String getEncoding() {
-		return encoding;
-	}
-
-	public void setEncoding(String encoding) {
-		this.encoding = encoding;
-	}
+//	String encoding = "UTF-8";	
+//	
+//	
+//	public String getEncoding() {
+//		return encoding;
+//	}
+//
+//	public void setEncoding(String encoding) {
+//		this.encoding = encoding;
+//	}
 
 	MongoDBClient mongoClient;
 	String siteId;
+
 	int insertCounter = 0;
 	int updateCounter = 0;
 	int failCounter = 0;
 	int existCounter = 0;
 	int totalCounter = 0;
 
+	int totalAddressCounter;
+	int addressApiCounter;
+	int addressHtmlCounter;
+	int addressFailCounter;
+	int addressSkipCounter;
+	
 	public void incCounter(COUNTER_TYPE counterType){
 		totalCounter ++;
 		switch (counterType){
@@ -268,11 +249,6 @@ public abstract class CommonGroupBuyParser {
 		}
 	}
 	
-	int totalAddressCounter;
-	int addressApiCounter;
-	int addressHtmlCounter;
-	int addressFailCounter;
-	int addressSkipCounter;
 	
 	public void incAddressCounter(ADDRESS_COUNTER_TYPE counterType){
 		totalAddressCounter ++;
@@ -289,22 +265,7 @@ public abstract class CommonGroupBuyParser {
 			addressSkipCounter ++;
 			break;
 		}
-	}
-	
-	public void incInsertCounter(){
-		insertCounter ++;
-		totalCounter ++;
-	}
-	
-	public void incFailCounter(){
-		failCounter ++;
-		totalCounter ++;
-	}
-	
-	public void incUpdateCounter(){
-		updateCounter ++;
-		totalCounter ++;
-	}
+	}	
 
 	public String getFieldValue(Element e, String fieldName){
 		Element subElement = e.getChild(fieldName);
@@ -386,14 +347,9 @@ public abstract class CommonGroupBuyParser {
 		} 
 			
 	}
-		
-
 	
-	
-
 	public boolean parse(String localFilePath){
-		doParse(localFilePath);
-		return true;
+		return doParse(localFilePath);
 	}
 	
 	public boolean doParse(String localFilePath) {
@@ -528,7 +484,6 @@ public abstract class CommonGroupBuyParser {
 				}
 				else{
 					// no address, try fetch from HTML page
-					addressParser.setEncoding(getEncoding());
 					addressList = addressParser.parseAddress(loc);	
 					
 					if (addressList != null && addressList.size() > 0){
@@ -571,17 +526,18 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	/**
-	 * �ַ�ָ�
+	 * 
 	 * @param expression
-	 *            ������ʽ�ַ�
+	 *            
 	 * @param text
-	 *            Ҫ���зָ�������ַ�
+	 *            
 	 */
 	public static String[] splitText(String Expression, String text) {
-		Pattern p = Pattern.compile(Expression); // ������ʽ
+		Pattern p = Pattern.compile(Expression);
 		String[] a = p.split(text);
 		return a;
 	}
+	
 	/**
 	 * 
 	 */
@@ -603,6 +559,7 @@ public abstract class CommonGroupBuyParser {
 		 } 
 		return id;
 	}
+	
 	/**
 	 * 
 	 */
@@ -619,7 +576,7 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	public String convertCity(String city){
-		return "全国";
+		return city;
 	}
 	
 	public abstract boolean disableAddressParsing();

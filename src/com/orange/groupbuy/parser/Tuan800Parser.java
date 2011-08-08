@@ -58,7 +58,6 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			String startTimeString = getFieldValue(data, "startTime");
 			String endTimeString = getFieldValue(data, "endTime");
 			String merchantEndTimeString = getFieldValue(data, "merchantEndTime");
-//			System.out.println("merchantEndTime="+merchantEndTimeString);
 			double value = StringUtil.doubleFromString(getFieldValue(data, "value"));
 			double price = StringUtil.doubleFromString(getFieldValue(data, "price"));
 			String description = getFieldValue(data, "tip");

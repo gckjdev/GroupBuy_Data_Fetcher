@@ -16,7 +16,7 @@ import com.orange.groupbuy.dao.Gps;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
-public class LashouParser extends Hao123Parser {
+public class LashouParser extends Tuan800Parser {
 
 //	@Override
 //	public boolean parseElement(Element root, CommonAddressParser addressParser){
@@ -143,10 +143,13 @@ public class LashouParser extends Hao123Parser {
 		
 		final String basicwapURL = "http://m.lashou.com/action/index.php?func=show_one&id=";
 		String id = getIDFromWeb("deal/", ".html", loc);
-		if(id == null)
-			return null;
-		else 
-			return basicwapURL.concat(id);
+		if(id == null){
+			id = getIDFromWeb("id=", "", loc);
+			if (id == null)
+				return null;
+		}
+		
+		return basicwapURL.concat(id);
 	}
 
 
