@@ -41,7 +41,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);	
 		String localFilePath = (String)task.get(DBConstants.F_TASK_FILE_PATH);
 		
-		mainProcessor.severe(this, "execute task="+task.toString());
+		mainProcessor.info(this, "execute task="+task.toString());
 		
 		if (siteId == null || url == null){
 			mainProcessor.severe(this, "siteId("+siteId+") or url("+url+") is null");
