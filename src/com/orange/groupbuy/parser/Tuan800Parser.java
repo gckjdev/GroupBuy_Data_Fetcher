@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import com.orange.common.utils.DateUtil;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
@@ -80,9 +81,22 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			if (category == DBConstants.C_CATEGORY_UNKNOWN)
 				category = setCategoryByTag(allTags);
 			
-			Date startDate = StringUtil.dateFromIntString(startTimeString);
-			Date endDate = StringUtil.dateFromIntString(endTimeString);
-			Date merchantEndDate = StringUtil.dateFromIntString(merchantEndTimeString);
+			Date startDate = null;
+			Date endDate = null;
+			Date merchantEndDate = null;
+			if (startTimeString.contains("*") || startTimeString.contains(":")){
+				final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"; 
+				final String BEIJING_TIMEZONE = "GMT+0800";
+				startDate = DateUtil.dateFromStringByFormat(startTimeString, DATE_FORMAT, BEIJING_TIMEZONE);
+				endDate = DateUtil.dateFromStringByFormat(endTimeString, DATE_FORMAT, BEIJING_TIMEZONE);
+				merchantEndDate = DateUtil.dateFromStringByFormat(merchantEndTimeString, DATE_FORMAT, BEIJING_TIMEZONE);
+			}
+			else{
+				startDate = StringUtil.dateFromIntString(startTimeString);
+				endDate = StringUtil.dateFromIntString(endTimeString);
+				merchantEndDate = StringUtil.dateFromIntString(merchantEndTimeString);				
+			}
+			
 			
 			List<String> telList = new LinkedList<String>();
 			List<String> shopNameList = new LinkedList<String>();
@@ -105,7 +119,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 					String latitude = getFieldValue(shop, "latitude");					
 					
 					// TODO add into address list
-					System.out.println("shop="+shopName+","+shopTel+","+shopAddress+","+latitude+","+longitude);
+//					System.out.println("shop="+shopName+","+shopTel+","+shopAddress+","+latitude+","+longitude);
 					
 					if (shopAddress != null && shopAddress.length() > 0)
 						address.add(shopAddress);
@@ -162,22 +176,24 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 		if (allTags == null)
 			return category;
 		
-		if (allTags.matches("美食|食品|菜|餐|吃")){
+		if (allTags.contains("美食") || allTags.contains("食品") || allTags.contains("菜") || 
+			allTags.contains("餐") || allTags.contains("吃")){
 			category = DBConstants.C_CATEGORY_EAT;
 		}
-		else if (allTags.matches("美容|化妆")){
+		else if (allTags.contains("美容") || allTags.contains("化妆")){
 			category = DBConstants.C_CATEGORY_FACE;				
 		}
-		else if (allTags.matches("娱乐|玩|休闲|电影|KTV")){
+		else if (allTags.contains("娱乐") || allTags.contains("玩") || allTags.contains("休闲") || 
+				allTags.contains("电影") || allTags.contains("KTV")){
 			category = DBConstants.C_CATEGORY_FUN;				
 		}
-		else if (allTags.matches("运动|健身|球")){
+		else if (allTags.contains("运动") || allTags.contains("健身") || allTags.contains("球")){
 			category = DBConstants.C_CATEGORY_KEEPFIT;
 		}
-		else if (allTags.matches("生活|酒店|旅")){
+		else if (allTags.contains("生活") || allTags.contains("酒店") || allTags.contains("旅")){
 			category = DBConstants.C_CATEGORY_LIFE;				
 		}
-		else if (allTags.matches("购")){
+		else if (allTags.contains("购")){
 			category = DBConstants.C_CATEGORY_SHOPPING;								
 		}
 		

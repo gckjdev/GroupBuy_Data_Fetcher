@@ -19,6 +19,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 
 	public static String DEFAULT_FILE_PATH = "./data";	
 	DBObject task;
+	Date startTime;
 	
 	private synchronized static String getPath(){
 		String dateDir = DateUtil.dateToStringByFormat(new Date(), "yyyyMMdd");
@@ -42,6 +43,8 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 	public void execute(CommonProcessor mainProcessor) {
 		boolean result = true;
 		MongoDBClient mongoClient = mainProcessor.getMongoDBClient();		
+		
+		startTime = new Date();
 		
 		// HTTP fetch data and save file locally
 		String url = (String)task.get(DBConstants.F_TASK_URL);
@@ -100,7 +103,10 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		stat.put(DBConstants.F_COUNTER_UPDATE, parser.getUpdateCounter());
 		stat.put(DBConstants.F_COUNTER_EXIST, parser.getExistCounter());
 		stat.put(DBConstants.F_COUNTER_FAIL, parser.getFailCounter());
-		
+
+		stat.put(DBConstants.F_START_DATE, startTime);
+		stat.put(DBConstants.F_END_DATE, new Date());
+				
 		task.put(DBConstants.F_STAT, stat);
 
 	}

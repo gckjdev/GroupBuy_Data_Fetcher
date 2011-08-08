@@ -117,7 +117,7 @@ public class Fetcher extends CommonProcessor {
 				Timer resetTaskTimer = new Timer();
 				resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
 				
-				// the following code is just for test
+				// the following code is just for test now
 				// resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), new Date());
 			}
 		}

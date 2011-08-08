@@ -72,10 +72,10 @@ public class GenericAddressParser extends CommonAddressParser {
 				long parseStartTime = System.currentTimeMillis();
 				find_common_add(doc, url);
 				long parseEndTime = System.currentTimeMillis();
-				log.info("<doParseAddress> parsing addrestrs, network "
-						+ (parseStartTime - fetchTime)
-						+ " millseconds, parse "
-						+ (parseEndTime - parseStartTime) + " millseconds");
+//				log.info("<doParseAddress> parsing addrestrs, network "
+//						+ (parseStartTime - fetchTime)
+//						+ " millseconds, parse "
+//						+ (parseEndTime - parseStartTime) + " millseconds");
 			}
 
 		} catch (Exception e) {
