@@ -73,9 +73,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setDetail(detail);
 				product.setRange(range);
 				product.setCategory(category);
-				ProductManager.save(mongoClient, product);
 				product.setCategory(category);
 				product.setWapLoc(generateWapLoc(loc, image));
+
+				ProductManager.save(mongoClient, product);
 			}					
 			
 		}		
