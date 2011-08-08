@@ -75,7 +75,9 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			if (priority == 0)
 				priority = StringUtil.intFromString(getFieldValue(data, "priority"));
 			
-			List<String> tag = StringUtil.stringToList(getFieldValue(data, "tag")); 
+			String allTags = getFieldValue(data, "tag");
+			List<String> tag = StringUtil.stringToList(allTags);
+			category = setCategoryByTag(allTags);
 			
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
@@ -151,6 +153,34 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 		}		
 		
 		return true;
+	}
+
+	private int setCategoryByTag(String allTags) {
+		
+		int category = DBConstants.C_CATEGORY_UNKNOWN;
+		if (allTags == null)
+			return category;
+		
+		if (allTags.matches("美食|食品|菜|餐|吃")){
+			category = DBConstants.C_CATEGORY_EAT;
+		}
+		else if (allTags.matches("美容|化妆")){
+			category = DBConstants.C_CATEGORY_FACE;				
+		}
+		else if (allTags.matches("娱乐|玩|休闲|电影|KTV")){
+			category = DBConstants.C_CATEGORY_FUN;				
+		}
+		else if (allTags.matches("运动|健身|球")){
+			category = DBConstants.C_CATEGORY_KEEPFIT;
+		}
+		else if (allTags.matches("生活|酒店|旅")){
+			category = DBConstants.C_CATEGORY_LIFE;				
+		}
+		else if (allTags.matches("购")){
+			category = DBConstants.C_CATEGORY_SHOPPING;								
+		}
+		
+		return category;
 	}
 
 	private String getDefaultSiteURL() {
