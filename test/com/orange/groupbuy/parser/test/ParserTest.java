@@ -83,4 +83,34 @@ public class ParserTest {
 //		boolean result = parser.parse("C:/Temp/groupbuy_raw_file/xinlang.xml");
 //		Assert.assertTrue(addressList != null && addressList.size() > 0);
 	}
+	
+	@Test
+	public void test1(){
+		String myStr = "222:333-999";
+		Assert.assertTrue(myStr.matches("(?i).*[:-].*"));
+		myStr = "222:333";
+		Assert.assertTrue(myStr.matches("(?i).*[:-].*"));
+		myStr = "999-999";
+		Assert.assertTrue(myStr.matches("(?i).*[:-].*"));
+		myStr = ":999999";
+		Assert.assertTrue(myStr.matches("(?i).*[:-].*"));
+		myStr = "123456";
+		Assert.assertFalse(myStr.matches("(?i).*[:-].*"));
+		myStr = "123456";
+		Assert.assertFalse(myStr.matches("(?i).*[:-].*"));
+
+		myStr = "美食";
+		Assert.assertTrue(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+		myStr = "娱乐,美食";
+		Assert.assertTrue(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+		myStr = "娱乐,吃";
+		Assert.assertTrue(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+		myStr = "娱乐西餐";
+		Assert.assertTrue(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+		myStr = "美休闲";
+		Assert.assertFalse(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+		myStr = "其他";
+		Assert.assertFalse(myStr.matches(".*(美食|食品|菜|餐|吃).*"));
+	}
+
 }

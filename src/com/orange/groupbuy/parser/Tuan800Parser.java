@@ -176,26 +176,45 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 		if (allTags == null)
 			return category;
 		
-		if (allTags.contains("美食") || allTags.contains("食品") || allTags.contains("菜") || 
-			allTags.contains("餐") || allTags.contains("吃")){
-			category = DBConstants.C_CATEGORY_EAT;
+		if (allTags.matches(".*(美食|食品|菜|餐|吃).*")){
+				category = DBConstants.C_CATEGORY_EAT;
 		}
-		else if (allTags.contains("美容") || allTags.contains("化妆")){
+		else if (allTags.matches(".*(美容|化妆).*")){
 			category = DBConstants.C_CATEGORY_FACE;				
 		}
-		else if (allTags.contains("娱乐") || allTags.contains("玩") || allTags.contains("休闲") || 
-				allTags.contains("电影") || allTags.contains("KTV")){
+		else if (allTags.matches(".*(娱乐|玩|休闲|电影|KTV).*")){
 			category = DBConstants.C_CATEGORY_FUN;				
 		}
-		else if (allTags.contains("运动") || allTags.contains("健身") || allTags.contains("球")){
+		else if (allTags.matches(".*(运动|健身|球).*")){
 			category = DBConstants.C_CATEGORY_KEEPFIT;
 		}
-		else if (allTags.contains("生活") || allTags.contains("酒店") || allTags.contains("旅")){
+		else if (allTags.matches(".*(生活|酒店|旅).*")){
 			category = DBConstants.C_CATEGORY_LIFE;				
 		}
-		else if (allTags.contains("购")){
+		else if (allTags.matches(".*购.*")){
 			category = DBConstants.C_CATEGORY_SHOPPING;								
 		}
+		
+//		if (allTags.contains("美食") || allTags.contains("食品") || allTags.contains("菜") || 
+//			allTags.contains("餐") || allTags.contains("吃")){
+//			category = DBConstants.C_CATEGORY_EAT;
+//		}
+//		else if (allTags.contains("美容") || allTags.contains("化妆")){
+//			category = DBConstants.C_CATEGORY_FACE;				
+//		}
+//		else if (allTags.contains("娱乐") || allTags.contains("玩") || allTags.contains("休闲") || 
+//				allTags.contains("电影") || allTags.contains("KTV")){
+//			category = DBConstants.C_CATEGORY_FUN;				
+//		}
+//		else if (allTags.contains("运动") || allTags.contains("健身") || allTags.contains("球")){
+//			category = DBConstants.C_CATEGORY_KEEPFIT;
+//		}
+//		else if (allTags.contains("生活") || allTags.contains("酒店") || allTags.contains("旅")){
+//			category = DBConstants.C_CATEGORY_LIFE;				
+//		}
+//		else if (allTags.contains("购")){
+//			category = DBConstants.C_CATEGORY_SHOPPING;								
+//		}
 		
 		return category;
 	}
