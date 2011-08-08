@@ -77,7 +77,8 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			
 			String allTags = getFieldValue(data, "tag");
 			List<String> tag = StringUtil.stringToList(allTags);
-			category = setCategoryByTag(allTags);
+			if (category == DBConstants.C_CATEGORY_UNKNOWN)
+				category = setCategoryByTag(allTags);
 			
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);

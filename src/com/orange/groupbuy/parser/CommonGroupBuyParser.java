@@ -170,7 +170,7 @@ public abstract class CommonGroupBuyParser {
 			return new JuMeiParser();
 		
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_JINGDONG))
-			return new Tuan800Parser();		
+			return new JingDongParser();		
 		
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_MANZUO))
 			return new Tuan800Parser();
