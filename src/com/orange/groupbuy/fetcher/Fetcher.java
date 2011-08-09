@@ -98,9 +98,14 @@ public class Fetcher extends CommonProcessor {
     }
 	
 	public static void main(String[] args){		
-				
+						
 		final int MAX_THREAD_NUM = 5;
 		final int READ_TASK_INTERVAL = 1000;		// 1 second
+		
+		boolean reset = false;
+		if (args != null && args.length > 0){
+			reset = (Integer.parseInt(args[0]) == 1);
+		}
 		
 		for (int i=0; i<MAX_THREAD_NUM; i++){
 			
@@ -110,6 +115,11 @@ public class Fetcher extends CommonProcessor {
 			
 			// use the first dataFetcher for timer initlization
 			if (i == 0){
+				
+				if (reset){
+					log.info("<ResetTaskTimer> immediately");
+					FetchTaskManager.resetAllTask(dataFetcher.getMongoDBClient());
+				}
 				
 				Timer readTaskTimer = new Timer();
 				readTaskTimer.schedule(new ReadTaskTimerTask(dataFetcher), READ_TASK_INTERVAL, READ_TASK_INTERVAL);

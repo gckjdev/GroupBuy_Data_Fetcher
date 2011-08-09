@@ -173,7 +173,7 @@ public class GenericAddressParser extends CommonAddressParser {
 
 		if (str.length() > 5 && str.length() < 50) {
 			if (str.contains("。") || str.contains("，") || (addScore(str) < 2)) {
-				System.out.println("<debug> have the illegal code= " + str);
+//				System.out.println("<debug> have the illegal code= " + str);
 			} else if (addList.indexOf(str) == -1) {
 				addList.add(str);
 //				System.out.println("<debug> final result=" + str);
