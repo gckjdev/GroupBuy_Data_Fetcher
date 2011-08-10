@@ -160,9 +160,22 @@ public class GenericAddressParser extends CommonAddressParser {
 		int len = str.length();
 		if (len <= 0)
 			return false;
-		int index = str.indexOf("地址");
-		if (index != -1) {
-			str = str.substring(index + 3);
+		
+		final String ADDRESS1 = "地址:";
+		final String ADDRESS2 = "地址：";
+		final String ADDRESS3 = "地址";
+		
+		int index1 = str.indexOf(ADDRESS1);
+		int index2 = str.indexOf(ADDRESS2);
+		int index3 = str.indexOf(ADDRESS3);
+		if (index1 != -1) {
+			str = str.substring(index1 + ADDRESS1.length());
+		}
+		else if (index2 != -1){
+			str = str.substring(index2 + ADDRESS2.length());
+		}
+		else if (index3 != -1){
+			str = str.substring(index3 + ADDRESS3.length());			
 		}
 		
 		// delete the illegal string
