@@ -63,7 +63,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 			mainProcessor.info(this, "Download file from "+url+", save to "+localFilePath);
 			result = HttpDownload.downloadFile(url, localFilePath);
 			if (!result){
-				mainProcessor.warning(this, "Fail to download file from "+url+", save to "+localFilePath);
+				mainProcessor.warning(this, "Fail to download file from "+url+", file path = "+localFilePath);
 				FetchTaskManager.taskRetry(mongoClient, task);
 				return;
 			}		
