@@ -176,13 +176,13 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 		if (allTags == null)
 			return category;
 		
-		if (allTags.matches(".*(美食|食品|菜|餐|吃).*") || !city.equalsIgnoreCase("全国")){
+		if (allTags.matches(".*(美食|食品|菜|餐|吃).*") && !city.equalsIgnoreCase("全国")){
 				category = DBConstants.C_CATEGORY_EAT;
 		}
 		else if (allTags.matches(".*(美容|化妆).*")){
 			category = DBConstants.C_CATEGORY_FACE;				
 		}
-		else if (allTags.matches(".*(娱乐|玩|休闲|电影|KTV).*") || !city.equalsIgnoreCase("全国")){
+		else if (allTags.matches(".*(娱乐|玩|休闲|电影|KTV).*") && !city.equalsIgnoreCase("全国")){
 			category = DBConstants.C_CATEGORY_FUN;				
 		}
 		else if (allTags.matches(".*(运动|健身|球).*")){
