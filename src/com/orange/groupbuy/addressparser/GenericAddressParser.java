@@ -79,7 +79,7 @@ public class GenericAddressParser extends CommonAddressParser {
 			}
 
 		} catch (Exception e) {
-			log.severe("<doParseAddress> catch exception = "+e.toString());
+			log.severe("<doParseAddress> url = "+ url + " catch exception = "+e.toString());
 			e.printStackTrace();
 			return null;
 		}

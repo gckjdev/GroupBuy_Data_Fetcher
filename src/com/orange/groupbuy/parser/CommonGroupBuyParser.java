@@ -266,6 +266,7 @@ public abstract class CommonGroupBuyParser {
 			break;
 		}
 	}	
+	
 
 	public String getFieldValue(Element e, String fieldName){
 		Element subElement = e.getChild(fieldName);
@@ -348,6 +349,19 @@ public abstract class CommonGroupBuyParser {
 			
 	}
 	
+	private void printCounter(){
+		log.info("parse finish, total "+totalCounter+" parsed, "+
+				insertCounter+" insert, "+
+				updateCounter+" update, "+
+				existCounter+" exist, "+
+				failCounter+" failed.");
+		log.info("address parse statistic, total "+totalAddressCounter+" parsed, "+
+				addressApiCounter+" from API, "+
+				addressHtmlCounter+" from HTML, "+
+				addressSkipCounter+" skip, "+
+				addressFailCounter+" failure/none");		
+	}
+	
 	public boolean parse(String localFilePath){
 		return doParse(localFilePath);
 	}
@@ -369,16 +383,7 @@ public abstract class CommonGroupBuyParser {
 			}
 			
 			boolean result = parseElement(root, addressParser);			
-			log.info("parse finish, total "+totalCounter+" parsed, "+
-					insertCounter+" insert, "+
-					updateCounter+" update, "+
-					existCounter+" exist, "+
-					failCounter+" failed.");
-			log.info("address parse statistic, total "+totalAddressCounter+" parsed, "+
-					addressApiCounter+" from API, "+
-					addressHtmlCounter+" from HTML, "+
-					addressSkipCounter+" skip, "+
-					addressFailCounter+" failure/none");
+			printCounter();
 			
 			return result;
 
@@ -418,6 +423,10 @@ public abstract class CommonGroupBuyParser {
 	public Product saveProduct(MongoDBClient mongoClient, String city, String loc, String image, String title, Date startDate, Date endDate, 
 			double price, double value, int bought, String siteId, String siteName, String siteURL,
 			int major, List<String> addressList, CommonAddressParser addressParser, List<List<Double>> gpsList){
+		
+		if (totalCounter > 0 && totalCounter % 20 == 0){
+			printCounter();			
+		}
 		
 		// check if product exist
 		Product product;
