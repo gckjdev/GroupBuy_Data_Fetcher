@@ -12,6 +12,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import com.orange.common.solr.SolrClient;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
@@ -74,9 +75,12 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				product.setRange(range);
 				product.setCategory(category);
 				product.setWapLoc(generateWapLoc(loc, image));
-
+				
 				ProductManager.save(mongoClient, product);
-			}					
+				ProductManager.createSolrIndex(product, false);
+			}				
+			
+			commitSolrIndex();
 			
 		}		
 		

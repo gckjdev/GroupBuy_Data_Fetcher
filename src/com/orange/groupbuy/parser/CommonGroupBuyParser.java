@@ -20,6 +20,7 @@ import org.jsoup.nodes.*;
 
 
 import com.orange.common.mongodb.MongoDBClient;
+import com.orange.common.solr.SolrClient;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
 import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
@@ -382,7 +383,8 @@ public abstract class CommonGroupBuyParser {
 				return false;
 			}
 			
-			boolean result = parseElement(root, addressParser);			
+			boolean result = parseElement(root, addressParser);		
+			SolrClient.commit();
 			printCounter();
 			
 			return result;
@@ -398,6 +400,13 @@ public abstract class CommonGroupBuyParser {
 			return false;
 		}
 
+	}
+	
+	public void commitSolrIndex(){
+		final int COUNT_FOR_COMMIT = 50;
+		if (insertCounter > 0 && insertCounter % COUNT_FOR_COMMIT == 0){
+			SolrClient.commit();
+		}		
 	}
 	
 	public abstract boolean parseElement(Element root, CommonAddressParser addressParser);

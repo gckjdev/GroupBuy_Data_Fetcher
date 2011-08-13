@@ -162,8 +162,11 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				product.setGPS(gpsList);
 
 				ProductManager.save(mongoClient, product);
+				ProductManager.createSolrIndex(product, false);
 //				log.info("save final product="+product.toString());
 			}					
+			
+			commitSolrIndex();
 			
 		}		
 		
