@@ -21,7 +21,7 @@ public class GenericAddressParser extends CommonAddressParser {
 
 	
 	
-	private List<String> addList = new LinkedList<String>();
+	protected List<String> addList = new LinkedList<String>();
 
 	final static String DEFAULT_TEMP_ADDRESS_PATH = "./data/temp/address/";
 	
@@ -89,7 +89,7 @@ public class GenericAddressParser extends CommonAddressParser {
 	/**
 	 * 
 	 */
-	private void find_common_add(Document doc, String url) {
+	protected void find_common_add(Document doc, String url) {
 		try {
 			Elements list = (Elements) doc.getElementsByTag("div");
 			for (Element element : list) {
@@ -179,21 +179,24 @@ public class GenericAddressParser extends CommonAddressParser {
 		}
 		
 		// delete the illegal string
-		str = delString(str);
-
+		str = getCorrectString(str);
+		if (str == null)
+			return false;
+		if (getMarksCount(str, ",") > 2)
+			return false;
+		
 		// TODO remove
 //		System.out.println("<debug> parse str result=" + str);
 
-		if (str.length() > 5 && str.length() < 50) {
-			if (str.contains("。") || str.contains("，") || (addScore(str) < 2)) {
-//				System.out.println("<debug> have the illegal code= " + str);
-			} else if (addList.indexOf(str) == -1) {
+		if (str.length() > 5 && str.length() < 50 && (addScore(str) >= 2)) {
+			if (addList.indexOf(str) == -1) {
 				addList.add(str);
+				return true;
 //				System.out.println("<debug> final result=" + str);
 			} else {
+				return false;
 //				System.out.println("<debug> have the same address!");
-			}
-			return true;
+			}	
 		} else {
 //			System.out.println("<debug> parse str, address length "
 //					+ str.length() + " too short or too long, skip");
@@ -235,12 +238,30 @@ public class GenericAddressParser extends CommonAddressParser {
 	/**
 	 * 
 	 */
-	private String delString(String str) {
+	private String getCorrectString(String str) {
+		// for Lashou
+		if (str.contains("？"))
+			return null;
+		// for wowo
+		if (str.contains("★") || str.contains("●") || str.contains("×"))
+			return null;
+		if (str.contains("。") || str.contains("，"))
+			return null;
+		if (str.contains("!") || str.contains("！"))
+			return null;
+		if (str.indexOf("位于") != -1)
+			return null;
+		if (str.indexOf("乘坐") != -1)
+			return null;
+		
+		
 		int index = 0;
-		// TODO for gaopang
 		str = str.replace(" ", "");
-		// TODO for meituan
 		index = str.indexOf("店：");
+		if (index != -1) {
+			str = str.substring(index + 2);
+		}
+		index = str.indexOf("店:");
 		if (index != -1) {
 			str = str.substring(index + 2);
 		}
@@ -293,8 +314,33 @@ public class GenericAddressParser extends CommonAddressParser {
 		if (index != -1) {
 			str = str.substring(0, index);
 		}
-
+		index = str.indexOf("地铁");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("地点：");
+		if (index != -1) {
+			str = str.substring(index+3);
+		}
+		index = str.indexOf("时间：");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		
+		str = str.replace("，", ",");
+		str = str.replace("【", "(");
+		str = str.replace("】", ")");
+		str = str.replace("、", ",");
+		str = str.replace("—", "-");
+		if (str.indexOf(0) == ')')
+			str = str.substring(1);
+		
 		return str;
+	}
+	
+	public int getMarksCount(String content, String mark) {
+		String[] strs = content.split(mark);
+		return strs.length - 1;
 	}
 
 }

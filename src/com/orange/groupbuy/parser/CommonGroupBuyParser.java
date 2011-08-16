@@ -742,7 +742,8 @@ public abstract class CommonGroupBuyParser {
 		str = str.replace("、", ",");
 		str = str.replace("—", "-");
 		
-		
+		if (str.contains("？"))
+			return "";
 		if(str.length() < 5 || str.length() > 40)
 			return "";
 		return str.trim();

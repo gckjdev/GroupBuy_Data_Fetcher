@@ -110,12 +110,21 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 					Element shop = (Element)shopListIter.next();
 					String shopName = getFieldValue(shop, "name");
 					String shopTel = getFieldValue(shop, "tel");
-					String addressString = getFieldValue(shop, "addr");
-					if (addressString == null){
-						addressString = getFieldValue(shop, "address");	// adapt to Jingdong/Manzuo
+					
+					
+					String shopAddress = "";
+					if (isPostString == null || isPostString.equalsIgnoreCase("no")) {
+						String addressString = getFieldValue(shop, "addr");
+						if (addressString == null) {
+							addressString = getFieldValue(shop, "address");	// adapt to Jingdong/Manzuo
+						}
+						// parse the address
+						shopAddress = parseAddress(addressString);
+					} else {
+						//TODO
+						city = "全国";
 					}
-					// parse the address
-					String shopAddress = parseAddress(addressString);
+					
 					
 
 					String longitude = getFieldValue(shop, "longitude");

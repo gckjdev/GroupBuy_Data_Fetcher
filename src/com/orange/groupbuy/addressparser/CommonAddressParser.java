@@ -35,6 +35,9 @@ public abstract class CommonAddressParser {
 	public abstract List<String> doParseAddress(String url);
 
 	public static CommonAddressParser findParserById(String siteId){
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_GAOPENG))
+			return new GaopengAddressParser();
+		else 
 			return new GenericAddressParser();
 	}
 

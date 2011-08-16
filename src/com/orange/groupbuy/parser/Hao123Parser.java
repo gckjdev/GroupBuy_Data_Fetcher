@@ -64,11 +64,16 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			List<String> range = StringUtil.stringToList(getFieldValue(data, "range"));
 			List<String> addressList = StringUtil.stringToList(getFieldValue(data, "address")); 
 			List<String> address = new ArrayList<String>();
-			for (int i=0; i<addressList.size(); i++) {
-				String addressString = parseAddress(addressList.get(i));
-				if (addressString != null && !addressString.isEmpty()) 
-					address.add(addressString);
+			if (addressList != null){
+				for (int i=0; i<addressList.size(); i++) {
+					String addressString = parseAddress(addressList.get(i));
+					if (addressString != null && !addressString.isEmpty()) 
+						address.add(addressString);
+				}
+			} else {
+				address = null;
 			}
+			
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
 			
