@@ -56,38 +56,45 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		if (siteId == null || url == null){
 			mainProcessor.severe(this, "siteId("+siteId+") or url("+url+") is null");
 			return;
+
 		}
-				
-		if (localFilePath == null || localFilePath.length() == 0){
-			localFilePath = getTempFileName(siteId);
-			mainProcessor.info(this, "Download file from "+url+", save to "+localFilePath);
-			result = HttpDownload.downloadFile(url, localFilePath);
+		
+		try{
+			if (localFilePath == null || localFilePath.length() == 0){
+				localFilePath = getTempFileName(siteId);
+				mainProcessor.info(this, "Download file from "+url+", save to "+localFilePath);
+				result = HttpDownload.downloadFile(url, localFilePath);
+				if (!result){
+					mainProcessor.warning(this, "Fail to download file from "+url+", file path = "+localFilePath);
+					FetchTaskManager.taskRetry(mongoClient, task);
+					return;
+				}		
+				mainProcessor.info(this, "Download file OK! from "+url+", save to "+localFilePath);
+			}
+			
+			// update task status to save OK
+			FetchTaskManager.taskDownloadFileSuccess(mongoClient, task, localFilePath);
+			
+			// get parser and start parsing data
+			CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
+			result = parser.parse(localFilePath);
+			
 			if (!result){
-				mainProcessor.warning(this, "Fail to download file from "+url+", file path = "+localFilePath);
-				FetchTaskManager.taskRetry(mongoClient, task);
+				// update task status to failure
+				mainProcessor.warning(this, "Fail to parse file "+localFilePath);
+				setTaskStatisticData(task, parser);
+				FetchTaskManager.taskFailure(mongoClient, task);
 				return;
-			}		
-			mainProcessor.info(this, "Download file OK! from "+url+", save to "+localFilePath);
-		}
-		
-		// update task status to save OK
-		FetchTaskManager.taskDownloadFileSuccess(mongoClient, task, localFilePath);
-		
-		// get parser and start parsing data
-		CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
-		result = parser.parse(localFilePath);
-		
-		if (!result){
-			// update task status to failure
-			mainProcessor.warning(this, "Fail to parse file "+localFilePath);
+			}
+					
+			// update task status to finish
 			setTaskStatisticData(task, parser);
-			FetchTaskManager.taskFailure(mongoClient, task);
-			return;
+			FetchTaskManager.taskClose(mongoClient, task);
 		}
-				
-		// update task status to finish
-		setTaskStatisticData(task, parser);
-		FetchTaskManager.taskClose(mongoClient, task);
+		catch (Exception e){
+			mainProcessor.severe(this, "process task = "+ task.toString() +", but catch exception = "+e.toString());
+			e.printStackTrace();
+		}
 	}
 	
 	private void setTaskStatisticData(DBObject task, CommonGroupBuyParser parser){
