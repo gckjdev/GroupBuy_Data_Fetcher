@@ -603,4 +603,150 @@ public abstract class CommonGroupBuyParser {
 		return null;
 	}
 	
+	public  String parseAddress(String shopAddress) {
+		if(shopAddress == null || shopAddress.isEmpty())
+			return null;
+		String[] strs = shopAddress.split("\\s");
+		if (strs == null || strs.length == 0)
+			return null;
+		int len = strs.length;
+		for (int i = 0; i < strs.length; i++) {
+			strs[i] = getCorrectString(strs[i]);
+		}
+		int[] scores = new int[len];
+		for (int i = 0; i < len; i++)
+			scores[i] = 0;
+		for (int i = 0; i < len; i++) {
+			if (strs[i] == null)
+				continue;
+			if (strs[i].length() >= 5) {
+				scores[i] = addScore(strs[i]);
+			}
+		}
+		// bubble sort
+		int temp;
+		String stemp;
+		for (int i = 0; i < scores.length; i++) {
+			for (int j = 0; j < scores.length - i - 1; j++) {
+				if (scores[j] < scores[j + 1]) {
+					temp = scores[j];
+					scores[j] = scores[j + 1];
+					scores[j + 1] = temp;
+					// swap the string at the same time
+					stemp = strs[j];
+					strs[j] = strs[j + 1];
+					strs[j + 1] = stemp;
+				}
+			}
+		}
+		// consider the score
+		if (scores[0] >= 2 && strs[0].length() > 5 && strs[0].length() < 40)
+			return strs[0];
+		else 
+			return null;
+	}
+	
+	private int addScore(String str) {
+		int score = 0;
+		if (str.contains("市"))
+			score++;
+		if (str.contains("区"))
+			score++;
+		if (str.contains("路"))
+			score++;
+		if (str.contains("街"))
+			score++;
+		if (str.contains("道"))
+			score++;
+		if (str.contains("号"))
+			score++;
+		if (str.contains("楼"))
+			score++;
+		if (str.contains("巷"))
+			score++;
+		if (str.contains("层"))
+			score++;
+		if (str.contains("铺"))
+			score++;
+		if (str.contains("广场"))
+			score++;
+
+		return score;
+	}
+	
+	private String getCorrectString(String str) {
+		
+		int index = str.indexOf("地址：");
+		if (index != -1) {
+			str = str.substring(index + 3);
+		}
+		index = str.indexOf("电话");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("店：");
+		if (index != -1) {
+			str = str.substring(index + 2);
+		}
+		index = str.indexOf("（查看地图）");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("公交信息");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("联系");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("联络");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("咨询");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("预订");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("预约");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("公交");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("客服");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("营业");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("交通");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		index = str.indexOf("乘车");
+		if (index != -1) {
+			str = str.substring(0, index);
+		}
+		str = str.replace("，", ",");
+		str = str.replace("【", "(");
+		str = str.replace("】", ")");
+		str = str.replace("、", ",");
+		str = str.replace("—", "-");
+		
+		
+		if(str.length() < 5 || str.length() > 40)
+			return "";
+		return str.trim();
+	}
+	
+	
 }

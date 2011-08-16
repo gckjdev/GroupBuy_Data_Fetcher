@@ -3,10 +3,12 @@ package com.orange.groupbuy.parser;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -60,8 +62,13 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			int major = StringUtil.intFromString(getFieldValue(data, "major"));
 			int category = convertCategory(getFieldValue(data, "category"));
 			List<String> range = StringUtil.stringToList(getFieldValue(data, "range"));
-			List<String> address = StringUtil.stringToList(getFieldValue(data, "address")); 
-			
+			List<String> addressList = StringUtil.stringToList(getFieldValue(data, "address")); 
+			List<String> address = new ArrayList<String>();
+			for (int i=0; i<addressList.size(); i++) {
+				String addressString = parseAddress(addressList.get(i));
+				if (addressString != null && !addressString.isEmpty()) 
+					address.add(addressString);
+			}
 			Date startDate = StringUtil.dateFromIntString(startTimeString);
 			Date endDate = StringUtil.dateFromIntString(endTimeString);
 			
