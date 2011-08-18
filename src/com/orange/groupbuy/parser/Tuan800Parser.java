@@ -120,12 +120,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 						}
 						// parse the address
 						shopAddress = parseAddress(addressString);
-					} else {
-						//TODO
-						city = "全国";
-					}
-					
-					
+					}										
 
 					String longitude = getFieldValue(shop, "longitude");
 					String latitude = getFieldValue(shop, "latitude");					
