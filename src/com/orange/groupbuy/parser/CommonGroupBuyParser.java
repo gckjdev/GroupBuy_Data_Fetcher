@@ -403,7 +403,7 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	public void commitSolrIndex(){
-		final int COUNT_FOR_COMMIT = 50;
+		final int COUNT_FOR_COMMIT = 200;
 		if (insertCounter > 0 && insertCounter % COUNT_FOR_COMMIT == 0){
 			SolrClient.commit();
 		}		

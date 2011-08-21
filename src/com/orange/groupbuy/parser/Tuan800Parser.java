@@ -172,9 +172,6 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				ProductManager.createSolrIndex(product, false);
 //				log.info("save final product="+product.toString());
 			}					
-			
-			commitSolrIndex();
-			
 		}		
 		
 		return true;

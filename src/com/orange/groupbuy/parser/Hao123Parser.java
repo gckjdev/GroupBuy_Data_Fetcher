@@ -92,8 +92,6 @@ public class Hao123Parser extends CommonGroupBuyParser {
 				ProductManager.createSolrIndex(product, false);
 			}				
 			
-			commitSolrIndex();
-			
 		}		
 		
 		return true;
