@@ -14,11 +14,7 @@ import com.orange.groupbuy.manager.FetchTaskManager;
 
 public class Fetcher extends CommonProcessor {
 
-	static final String MONGO_SERVER = "localhost";
-	static final String MONGO_USER = "";
-	static final String MONGO_PASSWORD = "";
-	
-	public static MongoDBClient mongoClient = new MongoDBClient(MONGO_SERVER, DBConstants.D_GROUPBUY, MONGO_USER, MONGO_PASSWORD);
+	public static MongoDBClient mongoClient = new MongoDBClient(DBConstants.D_GROUPBUY);
 	
 	@Override
 	public MongoDBClient getMongoDBClient() {
