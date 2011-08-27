@@ -21,8 +21,8 @@ public class GaopengAddressParser extends GenericAddressParser {
 				String content = doc.html();
 				String[] strs = content.split("\\s");
 				for (String string : strs) {
-					if (string.contains("url=")) {
-						urlString = getUrlFromWeb("url=", "\"", string);
+					if (string.contains("u=")) {
+						urlString = getUrlFromWeb("u=\'", "\';", string);
 						break;
 					}
 				}
