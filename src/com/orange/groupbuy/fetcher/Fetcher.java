@@ -7,7 +7,6 @@ import java.util.Timer;
 
 import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
-import com.orange.common.processor.BasicProcessorRequest;
 import com.orange.common.processor.CommonProcessor;
 import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.manager.FetchTaskManager;

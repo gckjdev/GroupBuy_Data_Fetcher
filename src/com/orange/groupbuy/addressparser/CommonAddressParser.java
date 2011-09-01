@@ -3,10 +3,10 @@ package com.orange.groupbuy.addressparser;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import com.orange.groupbuy.constant.DBConstants;
-import com.orange.groupbuy.parser.CommonGroupBuyParser;
 
 public abstract class CommonAddressParser {
 

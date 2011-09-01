@@ -6,18 +6,15 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import org.jdom.Element;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.*;
-
 
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.common.solr.SolrClient;
@@ -379,7 +376,7 @@ public abstract class CommonGroupBuyParser {
 			
 			CommonAddressParser addressParser = CommonAddressParser.findParserById(siteId);
 			if (addressParser == null){
-				log.severe("cannot find address parser for site = "+siteId);
+				log.error("cannot find address parser for site = "+siteId);
 				return false;
 			}
 			
@@ -390,13 +387,13 @@ public abstract class CommonGroupBuyParser {
 			return result;
 
 		} catch (FileNotFoundException e) {
-			log.severe("<doParse> file="+localFilePath+", FileNotFoundException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", FileNotFoundException="+e.toString());
 			return false;
 		} catch (JDOMException e) {
-			log.severe("<doParse> file="+localFilePath+", JDOMException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", JDOMException="+e.toString());
 			return false;
 		} catch (IOException e) {
-			log.severe("<doParse> file="+localFilePath+", IOException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", IOException="+e.toString());
 			return false;
 		}
 
@@ -528,13 +525,13 @@ public abstract class CommonGroupBuyParser {
 				return product;
 			}
 			else{
-				log.severe("create new product failure, product = "+product.toString());
+				log.error("create new product failure, product = "+product.toString());
 				incCounter(COUNTER_TYPE.FAIL);
 				return null;
 			}
 		}
 		else{			
-			log.severe("fail to set product mandantory fields, loc="+loc+",city="+city+
+			log.error("fail to set product mandantory fields, loc="+loc+",city="+city+
 					",image="+image+",title="+title+",startDate="+startDate+",endDate="+endDate+
 					",price="+price+",value="+value+",bought="+bought+
 					",siteId="+siteId+",siteName="+siteName+",siteURL="+siteURL);

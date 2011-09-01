@@ -2,7 +2,6 @@ package com.orange.groupbuy.fetcher;
 
 import java.io.File;
 import java.util.Date;
-import java.util.UUID;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;

@@ -39,7 +39,7 @@ public class GaopengAddressParser extends GenericAddressParser {
 				return null;
 			}
 		} catch (Exception e) {
-			log.severe("<doParseAddress> url = " + url + " catch exception = "
+			log.error("<doParseAddress> url = " + url + " catch exception = "
 					+ e.toString());
 			e.printStackTrace();
 			return null;
