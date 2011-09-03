@@ -1,5 +1,7 @@
 package com.orange.groupbuy.fetcher;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -8,6 +10,7 @@ import java.util.Timer;
 import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.common.processor.CommonProcessor;
+import com.orange.common.utils.FileUtils;
 import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.manager.FetchTaskManager;
 
@@ -92,6 +95,33 @@ public class Fetcher extends CommonProcessor {
         }
     }
 	
+	   public static void deleteOldData(File file) throws IOException{
+	        
+	        if (file.exists() && file.isDirectory()) {
+	            for (File subf : file.listFiles()) {
+	                if (subf.isDirectory()) {
+	                    checkDateAndDelete(new File(subf.getAbsolutePath()));
+	                }
+	            }
+	        }
+	    }
+	    
+	    public static void checkDateAndDelete(File file) throws IOException{
+	        Calendar calnow = Calendar.getInstance();
+	        Calendar cal=Calendar.getInstance();
+	        
+	        Date datenow = new Date();
+	        calnow.setTime(datenow);
+	        
+	        Date date_modify = new Date(file.lastModified());
+	        cal.setTime(date_modify);
+	        
+	        int dec = calnow.get(Calendar.DAY_OF_YEAR) - cal.get(Calendar.DAY_OF_YEAR);
+	        if (dec > 7) {
+	            FileUtils.delFileOrDir(file);
+	        }
+	    }
+	
 	public static void main(String[] args){		
 						
 		final int MAX_THREAD_NUM = 5;
@@ -110,10 +140,15 @@ public class Fetcher extends CommonProcessor {
 			
 			// use the first dataFetcher for timer initlization
 			if (i == 0){
-				
 				if (reset){
 					log.info("<ResetTaskTimer> immediately");
 					FetchTaskManager.resetAllTask(dataFetcher.getMongoDBClient());
+
+                    try {
+                        deleteOldData(new File(FetchGroupBuyDataRequest.DEFAULT_FILE_PATH));
+                    } catch (IOException e) {
+                        log.info("delete old downloaded file in ./data failure.");
+                    }
 				}
 				
 				Timer readTaskTimer = new Timer();
