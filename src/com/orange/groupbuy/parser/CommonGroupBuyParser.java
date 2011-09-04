@@ -444,6 +444,7 @@ public abstract class CommonGroupBuyParser {
 			// update bought
 			if (product.getBought() != bought){
 				product.setBought(bought);
+				product.calcAndSetTopScore(bought, product.getStartDate());
 				updateFlag = true;				
 			}
 			
