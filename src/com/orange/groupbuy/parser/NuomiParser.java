@@ -56,5 +56,5 @@ public class NuomiParser extends Tuan800Parser {
 		id = id.substring(0, index);
 		wapURL = "http://m.nuomi.com/?areaId=".concat(cityCode).concat("&id=").concat(id);
 		return wapURL;
-	}
+		}
 }
