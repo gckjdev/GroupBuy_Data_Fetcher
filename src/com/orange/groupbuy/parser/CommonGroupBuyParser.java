@@ -198,7 +198,10 @@ public abstract class CommonGroupBuyParser {
 			return new Tuan800Parser();		
 
 		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_FENTUAN))
-			return new FenTuanParser();		
+			return new FenTuanParser();	
+		
+		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_ZUITAO))
+			return new ZuiTaoParser();		
 
 		return new Hao123Parser();			
 	}

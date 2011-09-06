@@ -1,34 +1,23 @@
 package com.orange.groupbuy.parser;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.cassandra.cli.CliParser.newColumnFamily_return;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 
-import com.orange.common.solr.SolrClient;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
-import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
-public class Hao123Parser extends CommonGroupBuyParser {
-
-
+public class ZuiTaoParser extends Hao123Parser {
+	
 	Element getDataElement(Element productElement){
-		return getFieldElement(productElement, "data", "display");
+		return getFieldElement(productElement, "data");
 	}
 	
-	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser){
 		List<?> productList = getFieldBlock(root, "url");
 		if (productList == null)
@@ -55,9 +44,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			//more consideration
 			String title = getFieldValue(data, "title");
 			String image = getFieldValue(data, "image");
+			image = removeZuitaoURL(image);
 			
-			String startTimeString = getFieldValue(data, "startTime");
-			String endTimeString = getFieldValue(data, "endTime");
+			String startTimeString = getFieldValue(data, "starttime");
+			String endTimeString = getFieldValue(data, "endtime");
 			
 			double value = StringUtil.doubleFromString(getFieldValue(data, "value"));
 			double price = StringUtil.doubleFromString(getFieldValue(data, "price"));
@@ -101,47 +91,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		
 		return true;
 	}
-
-
-
-	@Override
-	public int convertCategory(String category) {	
-		
-		if (siteId.equalsIgnoreCase(DBConstants.C_SITE_XING800)){
-			return DBConstants.C_CATEGORY_SHOPPING;
-		}
-		
-		return StringUtil.intFromString(category);
-	}
-
-	@Override
-	public String convertCity(String city){
-		if (city == null)
-			return null;
-		
-		if (city.equalsIgnoreCase("商品")){
-			return "全国";
-		}
-
-		if(city.contains(",")){
-			return "全国";
-		}
-		
-		return city;
-	}
-
-	public String generateWapLoc(String loc, String imageURL) {
-		return null;
-	}
 	
-	public String getDefaultSiteURL(){
-		return null;
+	private String removeZuitaoURL(String image) {
+		return image.replaceAll("http://www.zuitao.com", "");
+		// TODO Auto-generated method stub
 	}
-
-	@Override
-	public boolean disableAddressParsing() {
-		return false;
-	}
-	
 
 }
