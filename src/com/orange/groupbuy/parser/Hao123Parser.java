@@ -28,6 +28,18 @@ public class Hao123Parser extends CommonGroupBuyParser {
 		return getFieldElement(productElement, "data", "display");
 	}
 	
+	String getStartTimeString(Element data){
+		return getFieldValue(data, "startTime");
+	}
+
+	String getEndTimeString(Element data){
+		return getFieldValue(data, "endTime");
+	}
+	
+	String getImage(Element data){	
+		return getFieldValue(data, "image");
+	}
+
 	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser){
 		List<?> productList = getFieldBlock(root, "url");
@@ -54,10 +66,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			String city = convertCity(getFieldValue(data, "city"));
 			//more consideration
 			String title = getFieldValue(data, "title");
-			String image = getFieldValue(data, "image");
+			String image = getImage(data);
 			
-			String startTimeString = getFieldValue(data, "startTime");
-			String endTimeString = getFieldValue(data, "endTime");
+			String startTimeString = getStartTimeString(data);
+			String endTimeString = getEndTimeString(data);
 			
 			double value = StringUtil.doubleFromString(getFieldValue(data, "value"));
 			double price = StringUtil.doubleFromString(getFieldValue(data, "price"));
