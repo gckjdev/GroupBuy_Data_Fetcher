@@ -26,6 +26,11 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 	public String generateWapLoc(String webURL, String imageURL) {
 		return null;
 	}
+	
+	public String getLoc(Element productElement){
+		return getFieldValue(productElement, "loc");
+	}
+	
 
 	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser) {
@@ -39,7 +44,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			if (productElement == null)
 				continue;
 			
-			String  loc = getFieldValue(productElement, "loc");
+			String  loc = getLoc(productElement);
 			loc = loc.replaceAll("\\?source=tuan800", "");
 			
 			Element data = getFieldElement(productElement, "data", "display");
