@@ -23,7 +23,10 @@ import com.orange.groupbuy.manager.ProductManager;
 
 public class Hao123Parser extends CommonGroupBuyParser {
 
-
+	String getLoc(Element productElement){
+		return getFieldValue(productElement, "loc");
+	}
+	
 	Element getDataElement(Element productElement){
 		return getFieldElement(productElement, "data", "display");
 	}
@@ -39,6 +42,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 	String getImage(Element data){	
 		return getFieldValue(data, "image");
 	}
+	
 
 	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser){
@@ -52,7 +56,7 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			if (productElement == null)
 				continue;
 			
-			String  loc = getFieldValue(productElement, "loc");
+			String  loc = getLoc(productElement);
 			Element data = getDataElement(productElement);
 			if (data == null)
 				continue;
