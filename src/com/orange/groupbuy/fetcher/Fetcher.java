@@ -147,7 +147,7 @@ public class Fetcher extends CommonProcessor {
                     try {
                         deleteOldData(new File(FetchGroupBuyDataRequest.DEFAULT_FILE_PATH));
                     } catch (IOException e) {
-                        log.info("delete old downloaded file in ./data failure.");
+                        log.error("delete old downloaded file in ./data failure. ", e);
                     }
 				}
 				
