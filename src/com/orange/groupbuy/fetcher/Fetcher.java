@@ -130,6 +130,8 @@ public class Fetcher extends CommonProcessor {
 	        }
 	    }
 	    
+		private static final int SAVE_DAYS = 3;	// 3 days
+		
 	    public static void checkDateAndDelete(File file) throws IOException{
 	        Calendar calnow = Calendar.getInstance();
 	        Calendar cal=Calendar.getInstance();
@@ -141,7 +143,8 @@ public class Fetcher extends CommonProcessor {
 	        cal.setTime(date_modify);
 	        
 	        int dec = calnow.get(Calendar.DAY_OF_YEAR) - cal.get(Calendar.DAY_OF_YEAR);
-	        if (dec > 7) {
+	        if (dec > SAVE_DAYS) {
+	        	log.info("Clean directory " + file.getAbsolutePath());
 	            FileUtils.delFileOrDir(file);
 	        }
 	    }
