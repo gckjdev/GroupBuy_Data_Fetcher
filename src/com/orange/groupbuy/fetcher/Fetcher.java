@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
@@ -50,9 +51,32 @@ public class Fetcher extends CommonProcessor {
         }
     }
 	
+	static class ActivateAllTaskTimer extends TimerTask {
+
+		public static final int TIMER_INTERVAL = 1000 * 30 * 60;		// 30 minutes
+		
+		Fetcher dataFetcher;
+		
+		public ActivateAllTaskTimer(Fetcher dataFetcher){
+			this.dataFetcher = dataFetcher;
+		}
+		
+		@Override
+		public void run() {
+			try {
+				log.info("<ActivateAllTaskTimer> running now");			
+				FetchTaskManager.activateAllFinishTask(dataFetcher.getMongoDBClient());
+			}
+			catch (Exception e) {
+				log.error("<ActivateAllTaskTimer> catch exception ", e);
+			}
+		}
+		
+	}
+	
 	// reset and activate all task in DB 
 	static class ResetTaskTimer extends java.util.TimerTask{
-		
+						
 		Fetcher dataFetcher;
 		
 		public ResetTaskTimer(Fetcher dataFetcher){
@@ -157,8 +181,10 @@ public class Fetcher extends CommonProcessor {
 				Timer resetTaskTimer = new Timer();
 				resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
 				
-				// the following code is just for test now
-				// resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), new Date());
+				Timer hourlyTimer = new Timer();
+				hourlyTimer.schedule(new ActivateAllTaskTimer(dataFetcher), //0, 10000);
+						ActivateAllTaskTimer.TIMER_INTERVAL, ActivateAllTaskTimer.TIMER_INTERVAL);
+				
 			}
 		}
 		
