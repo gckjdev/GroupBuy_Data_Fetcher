@@ -86,14 +86,21 @@ public class Fetcher extends CommonProcessor {
         @Override
         public void run() {
         	
-        	log.info("<ResetTaskTimer> timer fired");
-
-        	// fetch active task and put into queue
-    		FetchTaskManager.resetAllTask(dataFetcher.getMongoDBClient());
-    		
-    		// set next timer
-			Timer newResetTaskTimer = new Timer();
-			newResetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
+        	try {
+	        	log.info("<ResetTaskTimer> timer fired");
+	
+	        	// fetch active task and put into queue
+	    		FetchTaskManager.resetAllTask(dataFetcher.getMongoDBClient());
+	    		
+	    		// set next timer
+				Timer newResetTaskTimer = new Timer();
+				newResetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
+				
+				deleteOldData(new File(FetchGroupBuyDataRequest.DEFAULT_FILE_PATH));
+        	}
+        	catch (Exception e){
+        		log.error("<ResetTaskTimer> but catch exception ", e);
+        	}
         }
         
         static public Date getTaskDate(){
@@ -155,9 +162,9 @@ public class Fetcher extends CommonProcessor {
 		final int READ_TASK_INTERVAL = 1000;		// 1 second
 		
 		boolean reset = false;
-		if (args != null && args.length > 0){
-			reset = (Integer.parseInt(args[0]) == 1);
-		}
+		String resetString = System.getProperty("reset");
+		if (resetString != null)
+			reset = true;
 		
 		for (int i=0; i<MAX_THREAD_NUM; i++){
 			
@@ -170,12 +177,6 @@ public class Fetcher extends CommonProcessor {
 				if (reset){
 					log.info("<ResetTaskTimer> immediately");
 					FetchTaskManager.resetAllTask(dataFetcher.getMongoDBClient());
-
-                    try {
-                        deleteOldData(new File(FetchGroupBuyDataRequest.DEFAULT_FILE_PATH));
-                    } catch (IOException e) {
-                        log.error("delete old downloaded file in ./data failure. ", e);
-                    }
 				}
 				
 				Timer readTaskTimer = new Timer();

@@ -495,6 +495,7 @@ public abstract class CommonGroupBuyParser {
 			
 			if (updateFlag){
 				incCounter(COUNTER_TYPE.UPDATE);
+				product.updateModifyDate();
 //				log.info("update existing product, product = "+product.toString());
 				ProductManager.save(mongoClient, product);
 			}
