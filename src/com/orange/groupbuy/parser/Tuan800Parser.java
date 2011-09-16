@@ -70,7 +70,9 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			int bought = StringUtil.intFromString(getFieldValue(data, "bought"));
 			String detail = getFieldValue(data, "detail");
 			int major = StringUtil.intFromString(getFieldValue(data, "major"));
-			int category = convertCategory(getFieldValue(data, "cate"));
+			
+			int category = detectCategory(getFieldValue(data, "cate"), city, title);
+
 			List<String> range = StringUtil.stringToList(getFieldValue(data, "range"));
 			
 			String isPostString = getFieldValue(data, "post");

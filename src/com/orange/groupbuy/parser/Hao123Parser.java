@@ -81,7 +81,10 @@ public class Hao123Parser extends CommonGroupBuyParser {
 			int bought = StringUtil.intFromString(getFieldValue(data, "bought"));
 			String detail = getFieldValue(data, "detail");
 			int major = StringUtil.intFromString(getFieldValue(data, "major"));
-			int category = convertCategory(getFieldValue(data, "category"));
+						
+			
+			int category = detectCategory(getFieldValue(data, "category"), city, title);
+			
 			List<String> range = StringUtil.stringToList(getFieldValue(data, "range"));
 			List<String> addressList = StringUtil.stringToList(getFieldValue(data, "address")); 
 			List<String> address = new ArrayList<String>();

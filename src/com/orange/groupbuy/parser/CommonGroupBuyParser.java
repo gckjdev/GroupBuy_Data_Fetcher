@@ -770,5 +770,75 @@ public abstract class CommonGroupBuyParser {
 		return str.trim();
 	}
 	
+	int detectCategory(String categoryString, String city, String...strings){
+		
+		int initialCategory = convertCategory(categoryString);		
+		int retCategory = DBConstants.C_CATEGORY_UNKNOWN;
+
+		retCategory = strongDetectCategory(initialCategory, city, strings);
+		if (retCategory == DBConstants.C_CATEGORY_UNKNOWN){
+			// still not detect, then use default category
+			if (initialCategory != DBConstants.C_CATEGORY_UNKNOWN){
+				return initialCategory;
+			}
+			else{
+				return weakDetectCategory(city, strings);
+			}
+		}
+		else {								
+			return retCategory;
+		}
+	}
+
+	private int weakDetectCategory(String city, String[] strings) {
+		int retCategory = DBConstants.C_CATEGORY_UNKNOWN;
+		if (strings == null || strings.length == 0 || city == null)
+			return retCategory;				
+		
+		for (int i=0; i<strings.length; i++){
+			if (strings[i].matches(".*(美食|食品|粤菜|湘菜|川菜|西餐|自助餐|东北菜|寿司|韩国料理|火锅).*") && !city.equalsIgnoreCase("全国")){
+				retCategory = DBConstants.C_CATEGORY_EAT;
+				return retCategory;
+			}
+			else if (strings[i].matches(".*(香港游|澳门游|北京游|旅游|一日游).*")){
+				retCategory = DBConstants.C_CATEGORY_TRAVEL;
+				return retCategory;
+			}
+			else if (strings[i].matches(".*(酒店|大床房|公寓|度假村|三星级|四星级|五星级).*")){
+				retCategory = DBConstants.C_CATEGORY_HOTEL;
+				return retCategory;
+			}
+			else if (strings[i].matches(".*(KTV|K歌|游戏币|咖啡厅|酒吧|桌游|棋牌|足疗|按摩|桑拿|水疗).*")){
+				retCategory = DBConstants.C_CATEGORY_FUN;
+				return retCategory;
+			}
+			else if (strings[i].matches(".*(摄影|写真).*")){
+				retCategory = DBConstants.C_CATEGORY_PHOTO;
+				return retCategory;
+			}
+		}
+		return retCategory;
+	}
+
+	private int strongDetectCategory(int initialCategory, String city,
+			String[] strings) {
+		
+		int retCategory = DBConstants.C_CATEGORY_UNKNOWN;
+		if (strings == null || strings.length == 0 || city == null)
+			return retCategory;
+		
+		for (int i=0; i<strings.length; i++){
+			if (strings[i].matches(".*(电影).*") && !city.equalsIgnoreCase("全国")){
+				retCategory = DBConstants.C_CATEGORY_FILM;
+				return retCategory;
+			}
+
+			if (strings[i].matches(".*(代金券|现金券).*")){
+				retCategory = DBConstants.C_CATEGORY_COUPON;
+				return retCategory;
+			}
+		}
+		return retCategory;
+	}
 	
 }

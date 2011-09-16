@@ -3,6 +3,8 @@ package com.orange.groupbuy.parser;
 
 import org.jdom.Element;
 
+import com.orange.groupbuy.constant.DBConstants;
+
 public class ZuiTaoParser extends Hao123Parser {
 	
 	@Override
@@ -40,7 +42,19 @@ public class ZuiTaoParser extends Hao123Parser {
 		if (image == null)
 			return null;
 		
-		return image.replaceAll("http://www.zuitao.com", ""); 
+		image = image.replaceAll("http://www.zuitao.com", "");
+		image = image.replaceAll("http://img.zuitao.com", "");
+		return image;
+	}
+	
+	@Override
+	public boolean disableAddressParsing() {
+		return true;
+	}
+	
+	@Override
+	public int convertCategory(String category) {
+		return DBConstants.C_CATEGORY_COUPON;
 	}
 
 }
