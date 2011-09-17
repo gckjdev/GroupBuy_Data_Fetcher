@@ -2,6 +2,7 @@ package com.orange.groupbuy.addressparser;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,9 +80,9 @@ public class GenericAddressParser extends CommonAddressParser {
 			}
 
 		} catch (Exception e) {
-			log.error("<doParseAddress> url = "+ url + " catch exception = "+e.toString());
-			e.printStackTrace();
-			return null;
+			log.error("<doParseAddress> url = "+ url + " catch exception = "+e.toString(), e);
+			addList.clear();
+			return addList;
 		}
 		return addList;
 	}

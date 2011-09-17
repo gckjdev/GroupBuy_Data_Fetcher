@@ -40,8 +40,7 @@ public class GaopengAddressParser extends GenericAddressParser {
 			}
 		} catch (Exception e) {
 			log.error("<doParseAddress> url = " + url + " catch exception = "
-					+ e.toString());
-			e.printStackTrace();
+					+ e.toString(), e);
 			return null;
 		}
 	}

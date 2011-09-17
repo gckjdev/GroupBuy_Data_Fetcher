@@ -3,6 +3,8 @@ package com.orange.groupbuy.fetcher;
 import java.io.File;
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
@@ -16,6 +18,8 @@ import com.orange.groupbuy.parser.CommonGroupBuyParser;
 
 public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 
+	static final Logger log = Logger.getLogger(FetchGroupBuyDataRequest.class.getName()); 
+	
 	public static String DEFAULT_FILE_PATH = "./data";	
 	DBObject task;
 	Date startTime;
@@ -58,6 +62,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 
 		}
 		
+		CommonGroupBuyParser parser = null;
 		try{
 			if (localFilePath == null || localFilePath.length() == 0){
 				localFilePath = getTempFileName(siteId);
@@ -75,7 +80,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 			FetchTaskManager.taskDownloadFileSuccess(mongoClient, task, localFilePath);
 			
 			// get parser and start parsing data
-			CommonGroupBuyParser parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
+			parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
 			result = parser.parse(localFilePath);
 			
 			if (!result){
@@ -91,12 +96,17 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 			FetchTaskManager.taskClose(mongoClient, task);
 		}
 		catch (Exception e){
-			mainProcessor.severe(this, "process task = "+ task.toString() +", but catch exception = "+e.toString());
-			e.printStackTrace();
+			log.error("process task = "+ task.toString() +", but catch exception = "+e.toString(), e);
+			setTaskStatisticData(task, parser);
+			FetchTaskManager.taskFailure(mongoClient, task);
 		}
 	}
 	
 	private void setTaskStatisticData(DBObject task, CommonGroupBuyParser parser){
+		
+		if (parser == null)
+			return;
+		
 		DBObject stat = new BasicDBObject();
 		
 		stat.put(DBConstants.F_COUNTER_ADDRESS_TOTAL, parser.getTotalAddressCounter());
