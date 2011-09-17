@@ -2,10 +2,8 @@ package com.orange.groupbuy.parser;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.jdom.Element;
@@ -32,7 +30,7 @@ public class Coo8Parser extends CommonGroupBuyParser {
 			if (productElement == null)
 				continue;
 
-			String loc = getLoc(productElement);
+			String loc = getFieldValue(productElement, "url");
 			String title = getFieldValue(productElement, "title");
 			String city = getFieldValue(productElement, "cityname");
 			String image = getFieldValue(productElement, "smallimg");
@@ -78,11 +76,6 @@ public class Coo8Parser extends CommonGroupBuyParser {
 		}
 
 		return true;
-	}
-
-	private String getLoc(Element productElement) {
-		return getFieldValue(productElement, "url");
-
 	}
 
 	@Override
