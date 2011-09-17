@@ -51,7 +51,7 @@ public class Coo8Parser extends CommonGroupBuyParser {
 			brief = brief.replaceAll("\n", "");
 
 			SimpleDateFormat formatter = new SimpleDateFormat(
-					"EEE, d MMM yyyy HH:mm:ss Z", java.util.Locale.UK);
+					"EEE, d MMM yyyy HH:mm:ss Z", java.util.Locale.US);
 			Date startDate = new Date();
 			Date endDate = new Date();
 			try {
