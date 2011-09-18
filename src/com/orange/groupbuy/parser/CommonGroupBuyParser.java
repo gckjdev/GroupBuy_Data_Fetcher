@@ -373,12 +373,12 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	private void printCounter(){
-		log.info(siteId + "parse finish, total "+totalCounter+" parsed, "+
+		log.info(siteId + " parse finish, total "+totalCounter+" parsed, "+
 				insertCounter+" insert, "+
 				updateCounter+" update, "+
 				existCounter+" exist, "+
 				failCounter+" failed.");
-		log.info(siteId + "address parse statistic, total "+totalAddressCounter+" parsed, "+
+		log.info(siteId + " address statistic, total "+totalAddressCounter+" parsed, "+
 				addressApiCounter+" from API, "+
 				addressHtmlCounter+" from HTML, "+
 				addressSkipCounter+" skip, "+
