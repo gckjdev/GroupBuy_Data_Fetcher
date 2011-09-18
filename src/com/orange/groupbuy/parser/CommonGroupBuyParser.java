@@ -373,12 +373,12 @@ public abstract class CommonGroupBuyParser {
 	}
 	
 	private void printCounter(){
-		log.info("parse finish, total "+totalCounter+" parsed, "+
+		log.info(siteId + "parse finish, total "+totalCounter+" parsed, "+
 				insertCounter+" insert, "+
 				updateCounter+" update, "+
 				existCounter+" exist, "+
 				failCounter+" failed.");
-		log.info("address parse statistic, total "+totalAddressCounter+" parsed, "+
+		log.info(siteId + "address parse statistic, total "+totalAddressCounter+" parsed, "+
 				addressApiCounter+" from API, "+
 				addressHtmlCounter+" from HTML, "+
 				addressSkipCounter+" skip, "+
@@ -412,14 +412,17 @@ public abstract class CommonGroupBuyParser {
 			return result;
 
 		} catch (FileNotFoundException e) {
-			log.error("<doParse> file="+localFilePath+", FileNotFoundException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", FileNotFoundException="+e.toString(), e);
 			return false;
 		} catch (JDOMException e) {
-			log.error("<doParse> file="+localFilePath+", JDOMException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", JDOMException="+e.toString(), e);
 			return false;
 		} catch (IOException e) {
-			log.error("<doParse> file="+localFilePath+", IOException="+e.toString());
+			log.error("<doParse> file="+localFilePath+", IOException="+e.toString(), e);
 			return false;
+		} catch (Exception e) {
+			log.error("<doParse> file="+localFilePath+", Exception="+e.toString(), e);
+			return false;			
 		}
 
 	}
