@@ -43,11 +43,16 @@ public class Fetcher extends CommonProcessor {
         public void run() {
 
         	// fetch active task and put into queue
-    		DBObject task = FetchTaskManager.obtainOneTask(dataFetcher.getMongoDBClient());
-    		if (task == null)
-    			return;
-    		
-    		dataFetcher.putReadTaskRequest(task);
+        	try {
+	    		DBObject task = FetchTaskManager.obtainOneTask(dataFetcher.getMongoDBClient());
+	    		if (task == null)
+	    			return;
+	    		
+	    		dataFetcher.putReadTaskRequest(task);
+        	}
+        	catch (Exception e){
+        		log.error("<ReadTaskTimerTask> but catch exception " + e.toString(), e);
+        	}
         }
     }
 	

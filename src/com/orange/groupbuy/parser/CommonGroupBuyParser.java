@@ -799,6 +799,9 @@ public abstract class CommonGroupBuyParser {
 			return retCategory;				
 		
 		for (int i=0; i<strings.length; i++){
+			if (strings[i] == null)
+				continue;
+			
 			if (strings[i].matches(".*(美食|食品|粤菜|湘菜|川菜|西餐|自助餐|东北菜|寿司|韩国料理|火锅).*") && !city.equalsIgnoreCase("全国")){
 				retCategory = DBConstants.C_CATEGORY_EAT;
 				return retCategory;
@@ -831,6 +834,9 @@ public abstract class CommonGroupBuyParser {
 			return retCategory;
 		
 		for (int i=0; i<strings.length; i++){
+			if (strings[i] == null)
+				continue;
+			
 			if (strings[i].matches(".*(电影).*") && !city.equalsIgnoreCase("全国")){
 				retCategory = DBConstants.C_CATEGORY_FILM;
 				return retCategory;
