@@ -10,13 +10,14 @@ import org.jdom.Element;
 
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
+import com.orange.groupbuy.constant.DBConstants;
 import com.orange.groupbuy.dao.Product;
 import com.orange.groupbuy.manager.ProductManager;
 
 public class Coo8Parser extends CommonGroupBuyParser {
 
 	public static final String COO8_WEBSITE = "库巴购物网";
-	public static final String COO8_SITEURL = "tuan.coo8.com";
+	public static final String COO8_SITEURL = "http://tuan.coo8.com";
 
 	@Override
 	public boolean parseElement(Element root, CommonAddressParser addressParser) {
@@ -32,7 +33,7 @@ public class Coo8Parser extends CommonGroupBuyParser {
 
 			String loc = getFieldValue(productElement, "url");
 			String title = getFieldValue(productElement, "title");
-			String city = getFieldValue(productElement, "cityname");
+			String city = convertCity(getFieldValue(productElement, "cityname"));
 			String image = getFieldValue(productElement, "smallimg");
 			String startTime = getFieldValue(productElement, "begintime");
 			String endTime = getFieldValue(productElement, "endtime");
@@ -81,7 +82,7 @@ public class Coo8Parser extends CommonGroupBuyParser {
 	@Override
 	public int convertCategory(String category) {
 		// TODO Auto-generated method stub
-		return 0;
+		return DBConstants.C_CATEGORY_SHOPPING;
 	}
 
 	@Override
@@ -93,6 +94,11 @@ public class Coo8Parser extends CommonGroupBuyParser {
 	@Override
 	public boolean disableAddressParsing() {
 		return true;
+	}
+	
+	@Override
+	public String convertCity(String city){
+		return "全国";
 	}
 
 }
