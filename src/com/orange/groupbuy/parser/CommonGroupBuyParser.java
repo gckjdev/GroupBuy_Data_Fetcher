@@ -406,8 +406,11 @@ public abstract class CommonGroupBuyParser {
 			}
 			
 			boolean result = parseElement(root, addressParser);		
+			
+			log.info(siteId + " fetch data done, commit solr index");
 			SolrClient.commit();
 			printCounter();
+			log.info(siteId + " fetch data done, commit solr index OK!");
 			
 			return result;
 
