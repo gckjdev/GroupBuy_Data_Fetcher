@@ -3,6 +3,7 @@ package com.orange.groupbuy.parser;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -385,19 +386,28 @@ public abstract class CommonGroupBuyParser {
 				addressFailCounter+" failure/none");		
 	}
 	
-	public boolean parse(String localFilePath){
-		return doParse(localFilePath);
+	public boolean parse(String localFilePath, String urlString){
+		return doParse(localFilePath, urlString);
 	}
 	
-	public boolean doParse(String localFilePath) {
+	public boolean doParse(String localFilePath, String urlString) {
 		SAXBuilder sb = new SAXBuilder();
 		Document doc;
 		try {
-			doc = sb.build(new FileInputStream(localFilePath));
+			//doc = sb.build(new FileInputStream(localFilePath));
+			URL url = new URL(urlString);
+			doc = sb.build(url);
+			if (doc == null){
+				log.error("<doParse> cannot generate XML document for "+urlString);
+				return false;
+			}
+			
 			Element root = doc.getRootElement();
 			
-			if (root == null)
+			if (root == null){
+				log.error("<doParse> cannot find root document for "+urlString);
 				return false;
+			}
 			
 			CommonAddressParser addressParser = CommonAddressParser.findParserById(siteId);
 			if (addressParser == null){
@@ -415,16 +425,16 @@ public abstract class CommonGroupBuyParser {
 			return result;
 
 		} catch (FileNotFoundException e) {
-			log.error("<doParse> file="+localFilePath+", FileNotFoundException="+e.toString(), e);
+			log.error("<doParse> url="+urlString+", FileNotFoundException="+e.toString(), e);
 			return false;
 		} catch (JDOMException e) {
-			log.error("<doParse> file="+localFilePath+", JDOMException="+e.toString(), e);
+			log.error("<doParse> url="+urlString+", JDOMException="+e.toString(), e);
 			return false;
 		} catch (IOException e) {
-			log.error("<doParse> file="+localFilePath+", IOException="+e.toString(), e);
+			log.error("<doParse> url="+urlString+", IOException="+e.toString(), e);
 			return false;
 		} catch (Exception e) {
-			log.error("<doParse> file="+localFilePath+", Exception="+e.toString(), e);
+			log.error("<doParse> url="+urlString+", Exception="+e.toString(), e);
 			return false;			
 		}
 

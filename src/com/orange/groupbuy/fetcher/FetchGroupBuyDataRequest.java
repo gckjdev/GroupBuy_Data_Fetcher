@@ -64,6 +64,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		
 		CommonGroupBuyParser parser = null;
 		try{
+			/* remove from 2011-9-19
 			if (localFilePath == null || localFilePath.length() == 0){
 				localFilePath = getTempFileName(siteId);
 				mainProcessor.info(this, "Download file from "+url+", save to "+localFilePath);
@@ -78,10 +79,11 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 			
 			// update task status to save OK
 			FetchTaskManager.taskDownloadFileSuccess(mongoClient, task, localFilePath);
+			*/
 			
 			// get parser and start parsing data
 			parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
-			result = parser.parse(localFilePath);
+			result = parser.parse(localFilePath, url);
 			
 			if (!result){
 				// update task status to failure

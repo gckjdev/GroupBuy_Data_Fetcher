@@ -58,7 +58,7 @@ public class Fetcher extends CommonProcessor {
 	
 	static class ActivateAllTaskTimer extends TimerTask {
 
-		public static final int TIMER_INTERVAL = 1000 * 60 * 60;		// 60 minutes
+		public static final int TIMER_INTERVAL = 1000 * 60 * 90;		// 90 minutes
 		
 		Fetcher dataFetcher;
 		
@@ -191,8 +191,8 @@ public class Fetcher extends CommonProcessor {
 				resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
 				
 				Timer hourlyTimer = new Timer();
-				hourlyTimer.schedule(new ActivateAllTaskTimer(dataFetcher),  0, 10000);
-						//ActivateAllTaskTimer.TIMER_INTERVAL, ActivateAllTaskTimer.TIMER_INTERVAL);
+				hourlyTimer.schedule(new ActivateAllTaskTimer(dataFetcher),  // 0, 10000);
+						ActivateAllTaskTimer.TIMER_INTERVAL, ActivateAllTaskTimer.TIMER_INTERVAL);
 				
 			}
 		}
