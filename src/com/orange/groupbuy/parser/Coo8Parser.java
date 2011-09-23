@@ -57,7 +57,8 @@ public class Coo8Parser extends CommonGroupBuyParser {
 				startDate = formatter.parse(startTime);
 				endDate = formatter.parse(endTime);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				log.error("<parseElement> but fail to parse startTime or endTime " + 
+						startTime + ", " + endTime, e);
 			}
 
 			Product product = saveProduct(mongoClient, city, loc, image, title,
@@ -81,13 +82,11 @@ public class Coo8Parser extends CommonGroupBuyParser {
 
 	@Override
 	public int convertCategory(String category) {
-		// TODO Auto-generated method stub
 		return DBConstants.C_CATEGORY_SHOPPING;
 	}
 
 	@Override
 	public String generateWapLoc(String webURL, String imageURL) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
