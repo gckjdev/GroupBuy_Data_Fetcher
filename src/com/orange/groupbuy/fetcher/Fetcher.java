@@ -58,7 +58,7 @@ public class Fetcher extends CommonProcessor {
 	
 	static class ActivateAllTaskTimer extends TimerTask {
 
-		public static final int TIMER_INTERVAL = 1000 * 60 * 90;		// 90 minutes
+		public static final int TIMER_INTERVAL = 1000 * 60 * 120;		// 120 minutes
 		
 		Fetcher dataFetcher;
 		
