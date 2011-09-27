@@ -226,7 +226,7 @@ public abstract class CommonGroupBuyParser {
 			return new Coo8Parser();
 
 		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_36TUAN))
-			return new Hao123Parser();
+			return new ThreeSixTuanParser();
 		
 		return new Hao123Parser();			
 	}
