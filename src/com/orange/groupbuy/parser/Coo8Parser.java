@@ -48,7 +48,9 @@ public class Coo8Parser extends CommonGroupBuyParser {
 
 			brief = brief.replaceAll("<br />", "");
 			brief = brief.replaceAll("\n", "");
-
+			
+			int category = detectCategory(getFieldValue(productElement, "category"), city, title);
+			
 			SimpleDateFormat formatter = new SimpleDateFormat(
 					"EEE, d MMM yyyy HH:mm:ss Z", java.util.Locale.US);
 			Date startDate = new Date();
@@ -70,6 +72,7 @@ public class Coo8Parser extends CommonGroupBuyParser {
 				// save extra fields
 				product.setDescription(brief);
 				product.setWapLoc(generateWapLoc(loc, image));
+				product.setCategory(category);
 
 				ProductManager.save(mongoClient, product);
 				ProductManager.createSolrIndex(product, false);
