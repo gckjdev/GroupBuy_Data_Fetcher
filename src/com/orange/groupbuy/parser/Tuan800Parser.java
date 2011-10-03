@@ -129,8 +129,16 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 						shopAddress = parseAddress(addressString);
 					}										
 
-					String longitude = getFieldValue(shop, "longitude");
-					String latitude = getFieldValue(shop, "latitude");					
+					String longitude = null;
+					String latitude = null;
+					// meituan's bug!
+					if (website.equals("美团网")) {
+						longitude = getFieldValue(shop, "latitude");
+						latitude = getFieldValue(shop, "longitude");			
+					} else {
+						longitude = getFieldValue(shop, "longitude");
+						latitude = getFieldValue(shop, "latitude");					
+					}
 					
 					// TODO add into address list
 //					System.out.println("shop="+shopName+","+shopTel+","+shopAddress+","+latitude+","+longitude);
@@ -155,8 +163,8 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 
 			Product product = saveProduct(mongoClient, city, loc, image, title, startDate, endDate, 
 					price, value, bought, siteId, website, siteurl, major, address, addressParser, gpsList);
-			
-			if (product != null){							
+			// product don't exist
+			if (product != null) {							
 				// save extra fields
 				product.setMerchantEndDate(merchantEndDate);
 				if (isPostString != null)
@@ -173,7 +181,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				product.setWapLoc(generateWapLoc(loc, image));
 				product.setTel(telList);
 				product.setShopList(shopNameList);
-				product.setGPS(gpsList);
+//				product.setGPS(gpsList);
 
 				ProductManager.save(mongoClient, product);
 				ProductManager.createSolrIndex(product, false);
