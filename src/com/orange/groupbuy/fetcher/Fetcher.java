@@ -190,9 +190,10 @@ public class Fetcher extends CommonProcessor {
 				Timer resetTaskTimer = new Timer();
 				resetTaskTimer.schedule(new ResetTaskTimer(dataFetcher), ResetTaskTimer.getTaskDate());
 				
-				Timer hourlyTimer = new Timer();
-				hourlyTimer.schedule(new ActivateAllTaskTimer(dataFetcher),   //0, 10000);
-						ActivateAllTaskTimer.TIMER_INTERVAL, ActivateAllTaskTimer.TIMER_INTERVAL);
+				// disable hourly timer due to low performance of current AWS server
+//				Timer hourlyTimer = new Timer();
+//				hourlyTimer.schedule(new ActivateAllTaskTimer(dataFetcher),   //0, 10000);
+//						ActivateAllTaskTimer.TIMER_INTERVAL, ActivateAllTaskTimer.TIMER_INTERVAL);
 				
 			}
 		}

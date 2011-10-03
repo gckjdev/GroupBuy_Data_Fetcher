@@ -42,8 +42,6 @@ public class ZuiTaoParser extends Hao123Parser {
 		if (image == null)
 			return null;
 		
-		image = image.replaceAll("http://www.zuitao.com", "");
-		image = image.replaceAll("http://img.zuitao.com", "");
 		return image;
 	}
 	
