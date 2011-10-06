@@ -91,12 +91,14 @@ public class SouhuParser extends Tuan800Parser {
 	@Override
 	public String convertCity(String city){
 		return city;
+	
 	}
 	
 	
 	@Override
 	public boolean disableAddressParsing() {
 		return true;
+	
 	}
 
 }
