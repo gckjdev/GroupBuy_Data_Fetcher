@@ -51,8 +51,8 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		
 		// HTTP fetch data and save file locally
 		String url = (String)task.get(DBConstants.F_TASK_URL);
-		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);	
 		String localFilePath = (String)task.get(DBConstants.F_TASK_FILE_PATH);
+		String siteId = (String)task.get(DBConstants.F_TASK_SITE_ID);	
 		
 		mainProcessor.info(this, "execute task="+task.toString());
 		

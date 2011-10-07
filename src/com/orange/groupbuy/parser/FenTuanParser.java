@@ -1,6 +1,5 @@
 package com.orange.groupbuy.parser;
 
-import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.constant.DBConstants;
 
 public class FenTuanParser extends Hao123Parser {

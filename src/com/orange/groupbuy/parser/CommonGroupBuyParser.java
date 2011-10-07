@@ -1,6 +1,5 @@
 package com.orange.groupbuy.parser;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
@@ -227,6 +226,18 @@ public abstract class CommonGroupBuyParser {
 
 		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_36TUAN))
 			return new ThreeSixTuanParser();
+		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_GAOPENG))
+			return new Hao123Parser();
+		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_HAOYIDING))
+			return new Tuan800Parser();
+		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_XING800))
+			return new Xing800Parser();
+		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_HAOHUASUAN))
+			return new Tuan800Parser();
 		
 		return new Hao123Parser();			
 	}
