@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jdom.Element;
 
+import com.orange.common.mongodb.MongoDBClient;
 import com.orange.common.utils.DateUtil;
 import com.orange.common.utils.StringUtil;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
@@ -49,6 +50,11 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			
 			Element data = getFieldElement(productElement, "data", "display");
 			if (data == null)
+				continue;
+			
+			String extraID = getFieldValue(data, "identifier");
+			boolean hasID = isExsit(mongoClient, extraID);
+			if(hasID)
 				continue;
 			
 			String website = getFieldValue(data, "website");
@@ -182,6 +188,7 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				product.setTel(telList);
 				product.setShopList(shopNameList);
 //				product.setGPS(gpsList);
+				product.setExtraId(extraID);
 
 				ProductManager.save(mongoClient, product);
 				ProductManager.createSolrIndex(product, false);
@@ -194,7 +201,11 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 
 	
 
-	private int setCategoryByTag(String allTags, String city) {
+	public boolean isExsit(MongoDBClient mongoClient, String extraID) {
+		return false;
+	}
+
+	protected int setCategoryByTag(String allTags, String city) {
 		
 		int category = DBConstants.C_CATEGORY_UNKNOWN;
 		if (allTags == null)
