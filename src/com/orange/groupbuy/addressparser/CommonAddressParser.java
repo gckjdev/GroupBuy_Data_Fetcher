@@ -1,5 +1,7 @@
 package com.orange.groupbuy.addressparser;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,10 @@ public abstract class CommonAddressParser {
 	Map<String, List<String>> cache = new HashMap<String, List<String>>(); 
 	String encoding = "UTF-8";
 	public List<String> parseAddress(String url){
+		
+		if (System.getProperty("address.disable") != null){
+			return Collections.emptyList();
+		}
 		
 		// read from cache
 		if (cache.containsKey(url))
