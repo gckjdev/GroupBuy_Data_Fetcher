@@ -52,16 +52,15 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 			if (data == null)
 				continue;
 			
-			String extraID = getFieldValue(data, "identifier");
-			boolean hasID = isExsit(mongoClient, extraID);
-			if(hasID)
-				continue;
-			
 			String website = getFieldValue(data, "website");
 			String siteurl = getFieldValue(data, "siteurl");
 			if (siteurl == null){
 				siteurl = getDefaultSiteURL();
 			}
+			
+			String externalID = getFieldValue(data, "identifier");
+			if(isCheckExternalID(siteId, externalID))
+				continue;
 			
 			String city = convertCity(getFieldValue(data, "city"));
 			//more consideration
@@ -188,20 +187,18 @@ public class Tuan800Parser extends CommonGroupBuyParser {
 				product.setTel(telList);
 				product.setShopList(shopNameList);
 //				product.setGPS(gpsList);
-				product.setExtraId(extraID);
-
+				product.setExternalId(externalID);
 				ProductManager.save(mongoClient, product);
 				ProductManager.createSolrIndex(product, false);
 //				log.info("save final product="+product.toString());
 			}					
 		}		
-		
 		return true;
 	}
 
 	
 
-	public boolean isExsit(MongoDBClient mongoClient, String extraID) {
+	public boolean isCheckExternalID(String siteID, String externalID) {
 		return false;
 	}
 
