@@ -1,8 +1,6 @@
 package com.orange.groupbuy.addressparser;
 
 import java.io.File;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,9 +12,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.orange.common.utils.DateUtil;
-import com.orange.common.utils.FileUtils;
-import com.orange.common.utils.html.HtmlUtils;
-import com.orange.common.utils.http.HttpDownload;
+import com.orange.groupbuy.fetcher.RequestConstants;
 
 public class GenericAddressParser extends CommonAddressParser {
 
@@ -65,7 +61,8 @@ public class GenericAddressParser extends CommonAddressParser {
 			
 			
 			
-			Connection connection = Jsoup.connect(url).timeout(20*1000);	
+			Connection connection = Jsoup.connect(url).timeout(
+					RequestConstants.ADDRESS_PARSER_CONNECTION_TIMEOUT);
 			Document doc = connection.get();
 //			String htmlString = FileUtils.stringFromFile(file);			
 //			Document doc = Jsoup.parse(htmlString);
@@ -92,7 +89,7 @@ public class GenericAddressParser extends CommonAddressParser {
 	 */
 	protected void find_common_add(Document doc, String url) {
 		try {
-			Elements list = (Elements) doc.getElementsByTag("div");
+			Elements list = doc.getElementsByTag("div");
 			for (Element element : list) {
 				String content = element.text();
 				//TODO remove
@@ -101,6 +98,7 @@ public class GenericAddressParser extends CommonAddressParser {
 				if (strs == null)
 					return;
 				int len = strs.length;
+
 				for (int i = 0; i < strs.length; i++) {
 					String str = strs[i];
 					int index = str.indexOf("地址：");
@@ -114,6 +112,7 @@ public class GenericAddressParser extends CommonAddressParser {
 						strs[i] = str;
 					}
 				}
+
 				int[] scores = new int[len];
 				for (int i = 0; i < len; i++)
 					scores[i] = 0;
@@ -122,6 +121,7 @@ public class GenericAddressParser extends CommonAddressParser {
 						scores[i] = addScore(strs[i]);
 					}
 				}
+
 				// bubble sort
 				int temp;
 				String stemp;

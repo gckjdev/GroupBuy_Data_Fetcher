@@ -7,6 +7,8 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.orange.groupbuy.fetcher.RequestConstants;
+
 public class GaopengAddressParser extends GenericAddressParser {
 
 	@Override
@@ -14,7 +16,8 @@ public class GaopengAddressParser extends GenericAddressParser {
 		try {
 			super.addList.clear();
 			long fetchTime = System.currentTimeMillis();
-			Connection connection = Jsoup.connect(url).timeout(20 * 1000);
+			Connection connection = Jsoup.connect(url).timeout(
+					RequestConstants.ADDRESS_PARSER_CONNECTION_TIMEOUT);
 			Document doc = connection.get();
 			String urlString = null;
 			if (doc != null) {
@@ -29,7 +32,8 @@ public class GaopengAddressParser extends GenericAddressParser {
 				if (urlString == null || urlString.isEmpty())
 					return null;
 				
-				connection = Jsoup.connect(urlString).timeout(20 * 1000);
+				connection = Jsoup.connect(urlString).timeout(
+						RequestConstants.ADDRESS_PARSER_CONNECTION_TIMEOUT);
 				doc = connection.get();
 //				long parseStartTime = System.currentTimeMillis();
 				super.find_common_add(doc, urlString);
