@@ -204,6 +204,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.taobao.api</groupId>
+			<artifactId>taobao-sdk-java-online_standard</artifactId>
+			<version>20110914</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.6.1</version>

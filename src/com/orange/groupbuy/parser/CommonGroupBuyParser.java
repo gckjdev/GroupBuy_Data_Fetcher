@@ -16,6 +16,7 @@ import org.jdom.input.SAXBuilder;
 
 import org.jsoup.Jsoup;
 
+import com.mongodb.DBObject;
 import com.orange.common.mongodb.MongoDBClient;
 import com.orange.common.solr.SolrClient;
 import com.orange.groupbuy.addressparser.CommonAddressParser;
@@ -239,6 +240,10 @@ public abstract class CommonGroupBuyParser {
 		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_HAOHUASUAN))
 			return new Tuan800Parser();
 		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_TAOBAO_MIAOSHA))
+			return new TaobaoKillParser();
+		
+		
 		return new Hao123Parser();			
 	}
 	
@@ -399,8 +404,10 @@ public abstract class CommonGroupBuyParser {
 				addressFailCounter+" failure/none");		
 	}
 	
-	public boolean parse(String localFilePath, String urlString){
-		return doParse(localFilePath, urlString);
+	public boolean parse(DBObject task){
+		String url = (String)task.get(DBConstants.F_TASK_URL);
+		String localFilePath = (String)task.get(DBConstants.F_TASK_FILE_PATH);
+		return doParse(localFilePath, url);
 	}
 	
 	public boolean doParse(String localFilePath, String urlString) {

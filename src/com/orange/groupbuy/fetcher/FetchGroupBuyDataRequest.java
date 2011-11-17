@@ -56,8 +56,8 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 		
 		mainProcessor.info(this, "execute task="+task.toString());
 		
-		if (siteId == null || url == null){
-			mainProcessor.severe(this, "siteId("+siteId+") or url("+url+") is null");
+		if (siteId == null){
+			mainProcessor.severe(this, "siteId("+siteId+") is null");
 			return;
 
 		}
@@ -83,7 +83,7 @@ public class FetchGroupBuyDataRequest extends BasicProcessorRequest {
 			
 			// get parser and start parsing data
 			parser = CommonGroupBuyParser.getParser(siteId, mongoClient);
-			result = parser.parse(localFilePath, url);
+			result = parser.parse(task);
 			
 			if (!result){
 				// update task status to failure
