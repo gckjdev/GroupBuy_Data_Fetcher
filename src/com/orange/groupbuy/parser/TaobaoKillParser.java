@@ -30,16 +30,33 @@ import com.taobao.api.response.ShopGetResponse;
 public class TaobaoKillParser extends CommonGroupBuyParser {
 
 	final static String url = "http://gw.api.taobao.com/router/rest";
-	final static String appkey = "12426200";
-	final static String secret = "a673eb7d8a117ea5f24ce60d42fdf972";
+	
+	final static String TAOBAO_MIAOSHA_APPKEY = "12426200";
+	final static String TAOBAO_MIAOSHA_SECRET = "a673eb7d8a117ea5f24ce60d42fdf972";
+	
+	final static String TAOBAO_ZHEKOU_APPKEY = "12428257";
+	final static String TAOBAO_ZHEKOU_SECRET = "7f2ce34d3e564b1cf257d07ba751faae";
+	
 	final String basicWapSite = "http://a.m.taobao.com/i";
 	final String basicWebSite = "http://item.taobao.com/item.htm?id=";
 	final String SITE_NAME_TAOBAO = "http://www.taobao.com";
 	final String SITE_URL = "http://www.taobao.com";	
 		
-	TaobaoClient client = new DefaultTaobaoClient(url, appkey, secret);
+	TaobaoClient client; //= new DefaultTaobaoClient(url, appkey, secret);
 	
 	static final ConcurrentHashMap<String, JSONObject> taobaoShopMap = new ConcurrentHashMap<String, JSONObject>();
+	
+	public static TaobaoClient getTaobaoMiaoshaConfig(){
+		return new DefaultTaobaoClient(url, TAOBAO_MIAOSHA_APPKEY, TAOBAO_MIAOSHA_SECRET);
+	}
+	
+	public static TaobaoClient getTaobaoZhekouConfig(){
+		return new DefaultTaobaoClient(url, TAOBAO_ZHEKOU_APPKEY, TAOBAO_ZHEKOU_SECRET);		
+	}
+
+	public TaobaoKillParser(TaobaoClient client){
+		this.client = client;
+	}
 	
 	@Override
 	public int convertCategory(String category) {
@@ -68,12 +85,18 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 	
 	public JSONObject getTaobaoShop(String shopNick){
 		
+		if (StringUtil.isEmpty(shopNick)){
+			log.warn("getTaobaoShop but shop nickname is null or empty");
+			return null;
+		}
+		
 		JSONObject shopInfo = null;
 		if (taobaoShopMap.containsKey(shopNick)){
 			shopInfo= taobaoShopMap.get(shopNick);
 		}
 		else{
 			try {
+				log.info("getTaobaoShop, nick="+shopNick);
 				ShopGetRequest req=new ShopGetRequest();
 				req.setNick(shopNick);
 				req.setFields("sid,cid,title,nick,created,modified");
@@ -104,14 +127,14 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 		if (shopObj == null)
 			return null;
 		else
-			return "shop".concat(shopObj.getString("sid")).concat(".taobao.com");
+			return "http://shop".concat(shopObj.getString("sid")).concat(".taobao.com");
 	}
 
 	public String getTaobaoShopWAPURL(JSONObject shopObj){
 		if (shopObj == null)
 			return null;
 		else
-			return "shop".concat(shopObj.getString("sid")).concat(".m.taobao.com");
+			return "http://shop".concat(shopObj.getString("sid")).concat(".m.taobao.com");
 	}
 
 	public String getTaobaoShopTitle(JSONObject shopObj){
@@ -128,18 +151,22 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 		String query = (String)task.get(DBConstants.F_TAOBAO_QUERY);
 		int category = ((Double)task.get(DBConstants.F_TAOBAO_CATEGORY)).intValue();		
 		
+		log.info("Start parsing taobao products site, query = "+query+", category = "+category);		
+		
 		ItemsSearchRequest req = new ItemsSearchRequest();
 		req.setFields("num_iid,title,nick,pic_url,cid,price,type,list_time,delist_time,post_fee,score,volume");
 		req.setQ(query);
 		req.setOrderBy("popularity:desc");
 		req.setPageSize(200L);
 		try {
+			log.info("[SEND] taobao request, req = "+req.toString());
 			ItemsSearchResponse response = client.execute(req);
 			
 			// delete the html tag
 			org.jsoup.nodes.Document doc = Jsoup.parse(response.getBody());
 			String content = doc.text();
-			content = content.replaceAll("<\\\\/span>", "");
+			log.debug("[RECV] taobao response = "+content);
+//			content = content.replaceAll("<\\\\/span>", "");
 			// add product site
 			JSONObject object = JSONObject.fromObject(content);
 			object = object.getJSONObject("items_search_response");
@@ -203,6 +230,7 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 							price, value, bought, siteId, siteName, siteURL);
 					product.setWapLoc(wapURL);
 					product.setCategory(category);
+					product.setProductType(DBConstants.C_PRODUCT_TYPE_TAOBAO);
 						
 					if (!result){
 						log.info("fail to create taobao product on setMandantoryFields, product = "+product.toString());
@@ -232,7 +260,11 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 						hasChange = true;
 					}
 					if (hasChange){
+						log.debug("product "+product.getTitle()+" change, update DB");
 						ProductManager.save(mongoClient, product);
+					}
+					else{
+						log.debug("product "+product.getTitle()+" found, no change");
 					}
 				}
 			}		
@@ -245,7 +277,7 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 			log.error("execute taobao kill parser, but catch exception = " + e.toString(), e);			
 		}
 		
-		
+		log.info("Finish parsing all taobao products site, query = "+query+", category = "+category);		
 		return true;
 	}
 }

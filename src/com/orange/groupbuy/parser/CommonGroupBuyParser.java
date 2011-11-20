@@ -240,9 +240,13 @@ public abstract class CommonGroupBuyParser {
 		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_HAOHUASUAN))
 			return new Tuan800Parser();
 		
-		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_TAOBAO_MIAOSHA))
-			return new TaobaoKillParser();
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_TAOBAO_MIAOSHA)){			
+			return new TaobaoKillParser(TaobaoKillParser.getTaobaoMiaoshaConfig());
+		}
 		
+		if(siteId.equalsIgnoreCase(DBConstants.C_SITE_TAOBAO_ZHEKOU)){			
+			return new TaobaoKillParser(TaobaoKillParser.getTaobaoZhekouConfig());
+		}
 		
 		return new Hao123Parser();			
 	}
