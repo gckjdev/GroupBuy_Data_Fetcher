@@ -23,9 +23,11 @@ import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.ItemsSearchRequest;
 import com.taobao.api.request.SellercatsListGetRequest;
 import com.taobao.api.request.ShopGetRequest;
+import com.taobao.api.request.UserGetRequest;
 import com.taobao.api.response.ItemsSearchResponse;
 import com.taobao.api.response.SellercatsListGetResponse;
 import com.taobao.api.response.ShopGetResponse;
+import com.taobao.api.response.UserGetResponse;
 
 public class TaobaoKillParser extends CommonGroupBuyParser {
 
@@ -83,9 +85,34 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 		return DateUtil.dateFromStringByFormat(dateString, TAOBAO_DATE_FORMAT, DateUtil.CHINA_TIMEZONE);
 	}
 	
+	public boolean userHasShop(String userNick) {
+		UserGetRequest req = new UserGetRequest();
+		req.setFields("has_shop");
+		req.setNick(userNick);
+		UserGetResponse response;
+		try {
+			response = client.execute(req , null);
+			org.jsoup.nodes.Document doc = Jsoup.parse(response.getBody());
+			String content = doc.text();
+			JSONObject object = JSONObject.fromObject(content);
+			object = object.getJSONObject("user_get_response");
+			log.debug("get taobao user = "+object.toString());
+			if (object != null && object.containsKey("user")){					
+				JSONObject userInfo = object.getJSONObject("user");
+				boolean hasShop = userInfo.getBoolean("has_shop");
+				return hasShop;
+			}
+		} 
+		catch (ApiException e) {
+			log.error("userHasShop but catch exception = "+e.toString(), e);
+		}
+		
+		return false;
+	}
+	
 	public JSONObject getTaobaoShop(String shopNick){
 		
-		if (StringUtil.isEmpty(shopNick)){
+		if (shopNick == null || shopNick.trim().length() == 0){
 			log.warn("getTaobaoShop but shop nickname is null or empty");
 			return null;
 		}
@@ -95,6 +122,11 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 			shopInfo= taobaoShopMap.get(shopNick);
 		}
 		else{
+			if (userHasShop(shopNick) == false){
+				log.warn("user " + shopNick + " found but has no shop");
+				return null;
+			}
+			
 			try {
 				log.info("getTaobaoShop, nick="+shopNick);
 				ShopGetRequest req=new ShopGetRequest();
@@ -173,7 +205,7 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 			if (object == null || !object.containsKey("item_search")){
 				log.info("search taobao product but no result found");
 				return true;
-			}
+			}			
 
 			object = object.getJSONObject("item_search");
 			if (object == null || !object.containsKey("items")){
