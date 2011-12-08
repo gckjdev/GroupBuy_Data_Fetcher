@@ -198,7 +198,7 @@ public class TaobaoKillParser extends CommonGroupBuyParser {
 			org.jsoup.nodes.Document doc = Jsoup.parse(response.getBody());
 			String content = doc.text();
 			log.debug("[RECV] taobao response = "+content);
-//			content = content.replaceAll("<\\\\/span>", "");
+			content = content.replaceAll("<\\\\/span>", "");
 			// add product site
 			JSONObject object = JSONObject.fromObject(content);
 			object = object.getJSONObject("items_search_response");
